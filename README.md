@@ -153,3 +153,5 @@ document.body.appendChild(button);
 Here you explicitly instruct how to update the DOM each time.
 
 👉 React’s declarative style makes UIs easier to read, reason about, and maintain.
+
+You can only ever render a single JSX element at a time and that element can have as many children as needed. But there must be one parent element that encapsulates all of the other elements being rendered on a page.

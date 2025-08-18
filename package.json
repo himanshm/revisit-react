@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev:first": "vite --config vite.config.js apps/first-react",
-    "dev:facts": "vite --config vite.config.js --root apps/react-facts",
+    "dev:facts": "vite --config vite.config.js apps/react-facts",
     "lint": "eslint ."
   },
   "dependencies": {
