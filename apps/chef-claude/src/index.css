@@ -2,7 +2,6 @@
 html {
   font-size: 62.5%;
   box-sizing: border-box;
-  -webkit-text-size-adjust: 100%; /* prevent iOS zoom issues */
 }
 
 /* Inherit box-sizing everywhere */
@@ -16,7 +15,64 @@ body {
   padding: 0;
   line-height: 1.5;
   font-family: 'Inter', sans-serif;
-  color: #222;            /* readable dark text */
-  background-color: #fff; /* neutral background */
+  color: #141413;            /* readable dark text */
+  background-color: #FAFAF8; /* neutral background */
   -webkit-font-smoothing: antialiased;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  height: 8rem;
+  background: white;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.10), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
+}
+
+.logo-img {
+  width: 5rem;
+}
+
+.header > h1 {
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+main {
+  padding: 3rem 3rem 1rem;
+}
+
+.add-ingredient-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.add-ingredient-form > input {
+  border-radius: 6px;
+  border: 1px solid #D1D5DB;
+  padding: 0.9rem 1.3rem;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  flex-grow: 1;
+  min-width: 15rem;
+  max-width: 40rem;
+}
+
+.add-ingredient-form > button {
+  font-family: 'Inter', sans-serif; /* button do not inherit font-family */
+  border-radius: 6px;
+  border: none;
+  background: #141413;
+  color: #FAFAF8;
+  padding: 0.9rem 1.3rem;
+  width: 15rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.add-ingredient-form > button::before {
+  content: "+";
+  margin-right: 0.5rem;
 }
