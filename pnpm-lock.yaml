@@ -43,6 +43,10 @@ importers:
         specifier: ^7.1.2
         version: 7.1.2
 
+  apps/first-react: {}
+
+  apps/react-facts: {}
+
 packages:
 
   '@ampproject/remapping@2.3.0':
