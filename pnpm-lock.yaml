@@ -47,6 +47,8 @@ importers:
 
   apps/react-facts: {}
 
+  apps/travel-journal: {}
+
 packages:
 
   '@ampproject/remapping@2.3.0':

@@ -385,3 +385,630 @@ div.className = "box";
 `className` matches the DOM property name.
 
 It avoids confusion with the reserved keyword `class`.
+
+# Data Driven React
+
+## JS inside JSX
+
+In React, _JSX_ lets you write HTML-like syntax in JavaScript.
+Inside JSX, you can embed _JavaScript expressions_ by wrapping them in _curly braces {}_.
+
+✅ _Example 1: Basic JS inside JSX_
+
+```jsx
+function App() {
+  const name = "Himanshu";
+  return <h1>Hello, {name}!</h1>;
+}
+```
+
+🔹 `{name}` is a JS variable embedded in JSX.
+
+✅ _Example 2: Inline expressions_
+
+```jsx
+function App() {
+  const x = 5,
+    y = 10;
+  return <p>Sum: {x + y}</p>;
+}
+```
+
+🔹 `{x + y}` runs JavaScript inside JSX.
+
+✅ _Example 3: Conditional rendering_
+
+```jsx
+function App() {
+  const loggedIn = true;
+  return (
+    <div>{loggedIn ? <h2>Welcome back!</h2> : <h2>Please log in</h2>}</div>
+  );
+}
+```
+
+🔹 Ternary operator decides what JSX to show.
+
+✅ _Example 4: Loops with .map()_
+
+```jsx
+function App() {
+  const fruits = ["Apple", "Banana", "Mango"];
+  return (
+    <ul>
+      {fruits.map((fruit) => (
+        <li key={fruit}>{fruit}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+🔹 `.map()` runs JavaScript inside JSX to generate a list.
+
+👉 In short:
+
+Use `{}` to run _JavaScript expressions_ inside JSX.
+
+You cannot put full statements (like `if`, `for`) directly inside JSX, only expressions.
+
+## Props
+
+In React, _props (short for properties)_ are how you pass data from a _parent component_ to a _child component_.
+They make components _reusable_ by allowing them to accept dynamic values.
+
+💡 _What are props?_
+
+Props in React are just _inputs to a component_.
+
+Think of a component like a _function_.
+
+Props are the _arguments_ you give to that function.
+
+So:
+
+We _send_ props from a _parent component_.
+
+We _receive_ props in a _child component_.
+
+💡 _Where do we send props from?_
+
+From the _parent_, when we call (render) the child component.
+
+```tsx
+// Parent
+export default function App() {
+  return <Greeting name="Himanshu" age={22} />;
+}
+```
+
+Here:
+
+`name="Himanshu"` and `age={22}` are the props we send to the `Greeting` component.
+
+💡 _Where and how do we receive or consume props?_
+
+Inside the _child component_.
+You receive them as a _parameter_ of the function.
+
+```tsx
+// Child
+function Greeting({ name, age }: { name: string; age: number }) {
+  return (
+    <h2>
+      Hello, {name}. You are {age} years old.
+    </h2>
+  );
+}
+```
+
+Here:
+
+`{ name, age }` are the props received from the parent.
+
+They are just like variables passed into the component.
+
+🔗 _Full Example (Parent → Child with props)_
+
+```tsx
+// Child Component
+function Greeting({ name }: { name: string }) {
+  return <h2>Hello, {name}!</h2>;
+}
+
+// Parent Component
+export default function App() {
+  return (
+    <div>
+      <Greeting name="Alice" />
+      <Greeting name="Bob" />
+    </div>
+  );
+}
+```
+
+👉 The parent `App` sends `name` as a prop.
+👉 The child `Greeting` receives it and uses it inside JSX.
+
+💡 _Special case: `props.children`_
+
+Sometimes you don’t want to pass just data, but also _JSX itself_ as a prop.
+React does this automatically through `children`.
+
+```tsx
+function Card({ children }: { children: React.ReactNode }) {
+  return <div className="card">{children}</div>;
+}
+
+export default function App() {
+  return (
+    <Card>
+      <h3>This is inside the Card</h3>
+      <p>Passed from parent as children</p>
+    </Card>
+  );
+}
+```
+
+✅ Summary:
+
+Props are like arguments to a component.
+
+Sent from parent → received in child.
+
+They make components reusable and dynamic.
+
+👉 In short: _`props` let components talk to each other and make them dynamic + reusable_.
+
+### Consuming Props in child component
+
+💡 When we send multiple props
+
+A parent component can send many props at once, just like giving multiple inputs to a function.
+
+```tsx
+// Parent
+export default function App() {
+  return <UserCard name="Alice" age={25} country="India" />;
+}
+```
+
+Here we’re sending 3 props → `name`, `age`, `country`.
+
+💡 How the child receives them
+
+The child component receives all props as a _single object_.
+That means inside the child, you have two main ways to use them:
+
+✅ _1. Without destructuring (use props object directly)_
+
+```tsx
+function UserCard(props: { name: string; age: number; country: string }) {
+  return (
+    <div>
+      <h3>{props.name}</h3>
+      <p>Age: {props.age}</p>
+      <p>Country: {props.country}</p>
+    </div>
+  );
+}
+```
+
+Here, `props` is like a container object.
+You always write `props.something` to access values.
+
+✅ _2. With destructuring (modern & cleaner)_
+
+```tsx
+function UserCard({
+  name,
+  age,
+  country,
+}: {
+  name: string;
+  age: number;
+  country: string;
+}) {
+  return (
+    <div>
+      <h3>{name}</h3>
+      <p>Age: {age}</p>
+      <p>Country: {country}</p>
+    </div>
+  );
+}
+```
+
+Here, we unpack values directly in the function’s parameter.
+This is the most common way used in modern React.
+
+✅ _3. Destructuring inside the function (alternative)_
+
+```tsx
+function UserCard(props: { name: string; age: number; country: string }) {
+  const { name, age, country } = props; // destructuring here
+
+  return (
+    <div>
+      <h3>{name}</h3>
+      <p>Age: {age}</p>
+      <p>Country: {country}</p>
+    </div>
+  );
+}
+```
+
+This is useful when you want to first receive all props and then unpack them later.
+
+💡 Can I pass a custom prop (e.g. `blahblahblah={true}`) to a native
+DOM element? (e.g. `<div blahblahblah={true}>`) Why or why not?
+
+No, because the JSX we use to describe native DOM elements will
+be turned into REAL DOM elements by React. And real DOM elements
+only have the properties/attributes specified in the HTML specification.
+(Which doesn't include properties like `blahblahblah`)
+
+### Non string props
+
+Most people start thinking props are just strings (like `name="Alice"`), but actually, props can be any _JavaScript value_: numbers, booleans, arrays, objects, even functions or JSX itself.
+
+Let’s go step by step 👇
+
+💡 _1. Numbers_
+
+You pass them inside `{}` (otherwise React treats them as strings).
+
+```tsx
+function AgeDisplay({ age }: { age: number }) {
+  return <p>Age: {age}</p>;
+}
+
+export default function App() {
+  return <AgeDisplay age={25} />; // ✅ number
+}
+```
+
+If you wrote `age="25"`, it would be a string, not a number.
+
+💡 _2. Booleans_
+
+Useful for flags like `isActive`.
+
+```tsx
+function Button({ isActive }: { isActive: boolean }) {
+  return <button>{isActive ? "Active" : "Inactive"}</button>;
+}
+
+export default function App() {
+  return (
+    <>
+      <Button isActive={true} />
+      <Button isActive={false} />
+    </>
+  );
+}
+```
+
+Short form: writing just `isActive = true`.
+
+```tsx
+<Button isActive /> // same as isActive={true}
+```
+
+💡 _3. Arrays_
+
+Send lists of values.
+
+```tsx
+function List({ items }: { items: string[] }) {
+  return (
+    <ul>
+      {items.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+    </ul>
+  );
+}
+
+export default function App() {
+  return <List items={["Apple", "Banana", "Orange"]} />;
+}
+```
+
+💡 _4. Objects_
+
+Great for grouped data.
+
+```tsx
+type User = { name: string; age: number };
+
+function UserCard({ user }: { user: User }) {
+  return (
+    <h3>
+      {user.name} — {user.age}
+    </h3>
+  );
+}
+
+export default function App() {
+  return <UserCard user={{ name: "Alice", age: 25 }} />;
+}
+```
+
+💡 _5. Functions (callbacks)_
+
+Often used for event handling.
+
+```tsx
+function Button({ onClick }: { onClick: () => void }) {
+  return <button onClick={onClick}>Click Me</button>;
+}
+
+export default function App() {
+  const sayHello = () => alert("Hello!");
+  return <Button onClick={sayHello} />;
+}
+```
+
+💡 _6. JSX as a prop_
+
+You can even pass JSX itself.
+
+```tsx
+function Card({ content }: { content: React.ReactNode }) {
+  return <div className="card">{content}</div>;
+}
+
+export default function App() {
+  return <Card content={<h2>This is inside the card</h2>} />;
+}
+```
+
+🔑 Handling non-string props:
+
+Use curly braces `{}` when passing non-strings.
+
+Use TypeScript types (number, boolean, string[], {}, () => void, ReactNode) to ensure correctness.
+
+If they are optional → mark with ? and handle defaults/fallbacks.
+
+### How react renders arrays
+
+React can render arrays because arrays can be treated as a list of _React elements_.
+
+Example:
+
+```tsx
+function App() {
+  const fruits = ["Apple", "Banana", "Mango"];
+
+  return (
+    <ul>
+      {fruits.map((fruit) => (
+        <li key={fruit}>{fruit}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+🔹 Here `fruits.map(...)` returns an _array of `<li>` elements_, and React knows how to render them one after another.
+🔹 React basically loops through the array internally and renders each item in order.
+
+💡 _Why React can’t render plain objects_
+
+React doesn’t know how to display a raw object, because:
+
+Rendering means producing _text, numbers, or React elements_ that go into the DOM.
+
+A plain object (`{ name: "Alice" }`) is _not a valid React child_.
+
+React would have no idea: Do you want the keys? The values? The whole JSON?
+
+Example (this will break ❌):
+
+```tsx
+function App() {
+  const user = { name: "Alice", age: 25 };
+  return <div>{user}</div>; // ❌ Error: Objects are not valid as a React child
+}
+```
+
+💡 How to render object data correctly
+
+You need to convert the object into something React can render: a string or a number or JSX elements
+
+1. _Render as JSON string_
+
+```tsx
+<div>{JSON.stringify(user)}</div>
+```
+
+👉 Output: `{"name":"Alice","age":25}`
+
+2. _Render properties_
+
+```tsx
+<div>
+  <p>Name: {user.name}</p>
+  <p>Age: {user.age}</p>
+</div>
+```
+
+3. Convert object into an array and render
+
+```tsx
+<ul>
+  {Object.entries(user).map(([key, value]) => (
+    <li key={key}>
+      {key}: {value}
+    </li>
+  ))}
+</ul>
+```
+
+🔑 Summary
+
+✅ Arrays → React can render them because they can hold multiple React elements (like a list).
+
+❌ Objects → React can’t render them directly, because they aren’t text or elements. You must convert them to something displayable.
+
+### What is a "React child"?
+
+In React, when you write:
+
+```tsx
+<div>{something}</div>
+```
+
+That `{something}` is called a _React child_.
+A child must be one of these:
+
+A string → `"Hello"`
+
+A number → `123`
+
+A React element → `<h1>Hi</h1>`
+
+An array (of the above) →` ["One", "Two"]` or `[<p>One</p>, <p>Two</p>]`
+
+`null` / `undefined` / `boolean` (they render nothing)
+
+❌ Why a plain object doesn’t work
+
+A plain object like `{ name: "Alice" }` is not renderable because:
+
+React doesn’t know how to turn an object into DOM
+
+Should it show the keys? (`name`)
+
+The values? (`Alice`)
+
+The whole JSON? (`{ name: "Alice" }`)
+There’s no single obvious answer.
+
+Objects are complex data structures
+Unlike strings/numbers (which map directly to text nodes in HTML), an object is just a collection of key-value pairs. The browser has no direct way to display it.
+
+React enforces clarity
+If React allowed objects, everyone might expect different default behavior → messy, unpredictable UIs. So React throws an error instead.
+
+#### Quiz
+
+1. What does the `.map()` array method do?
+
+   Returns a new array. Whatever gets returned from the callback
+   function provided is placed at the same index in the new array.
+   Usually we take the items from the original array and modify them
+   in some way.
+
+2. What do we usually use `.map()` for in React?
+
+   Convert an array of raw data into an array of JSX elements
+   that can be displayed on the page.
+
+3. Critical thinking: why is using `.map()` better than just
+   creating the components manually by typing them out?
+
+   1. We often don't have the data ahead of time when we're building
+      the app, so we simply can't manually type them out.
+   2. It makes our code more "self-sustaining" - not requiring additional
+      changes to the code whenever the data changes.
+
+### Key prop
+
+💡 What is the _key prop_?
+
+The key prop is a special identifier you give to elements in a list.
+
+It helps React keep track of which items have changed, been added, or removed when the UI re-renders.
+
+✅ _Example without key (bad)_
+
+```tsx
+function App() {
+  const fruits = ["Apple", "Banana", "Mango"];
+  return (
+    <ul>
+      {fruits.map(fruit => (
+        <li>{fruit}</li>   {/* ❌ No key */}
+      ))}
+    </ul>
+  );
+}
+```
+
+React will warn:
+
+```zsh
+Warning: Each child in a list should have a unique "key" prop
+```
+
+✅ Example with key (good)
+
+```tsx
+function App() {
+const fruits = ["Apple", "Banana", "Mango"];
+return (
+
+<ul>
+{fruits.map(fruit => (
+<li key={fruit}>{fruit}</li> {/_ ✅ key added _/}
+))}
+</ul>
+);
+}
+```
+
+Now React knows how to uniquely identify each `<li>`.
+
+💡 Why is `key` required?
+
+React uses a virtual DOM to compare the old UI with the new one.
+
+Without keys → React just compares list items by their position.
+
+With keys → React can compare items by their identity.
+
+👉 Example:
+
+```tsx
+const fruits = ["Apple", "Banana"];
+// Later it becomes:
+const fruits = ["Orange", "Banana"];
+```
+
+Without keys → React sees "Orange" in index 0, assumes it replaced "Apple", re-renders both items.
+
+With keys → React sees "Banana" still exists (same key), only adds "Orange". Much more efficient ✅.
+
+💡 Rules for keys
+
+_Keys must be unique among siblings_
+
+```tsx
+<li key={id}>{name}</li>
+```
+
+(Not necessarily globally unique across the whole app.)
+
+_Never use index as a key (if list can change)_
+
+```tsx
+key = { index }; // ❌ leads to bugs if items are reordered
+```
+
+Use stable IDs or unique values instead.
+
+_Keys don’t appear inside props_
+The `key` is used only by React internally, you can’t access it in `props`.
+
+🔑 Summary
+
+`key` = unique identifier for list items.
+
+Helps React update UI efficiently instead of re-rendering everything.
+
+Always use something stable and unique (like an ID).
+
+Avoid using index unless the list never changes.

@@ -6,6 +6,7 @@
   "scripts": {
     "dev:first": "vite --config vite.config.js apps/first-react",
     "dev:facts": "vite --config vite.config.js apps/react-facts",
+    "dev:journal": "vite --config vite.config.js apps/travel-journal",
     "lint": "eslint ."
   },
   "dependencies": {
