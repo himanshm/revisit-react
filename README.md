@@ -1012,3 +1012,5 @@ Helps React update UI efficiently instead of re-rendering everything.
 Always use something stable and unique (like an ID).
 
 Avoid using index unless the list never changes.
+
+# React State

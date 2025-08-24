@@ -1,0 +1,22 @@
+/* Base font sizing: 1rem = 10px */
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+  -webkit-text-size-adjust: 100%; /* prevent iOS zoom issues */
+}
+
+/* Inherit box-sizing everywhere */
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* Body defaults */
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  font-family: 'Inter', sans-serif;
+  color: #222;            /* readable dark text */
+  background-color: #fff; /* neutral background */
+  -webkit-font-smoothing: antialiased;
+}
