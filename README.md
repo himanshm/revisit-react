@@ -1014,3 +1014,779 @@ Always use something stable and unique (like an ID).
 Avoid using index unless the list never changes.
 
 # React State
+
+## Event Listeners
+
+💡 _What is an Event Listener?_
+
+An event is something the user does in the browser → like clicking a button, typing in an input, or hovering over an element.
+
+An event listener is the function you attach to an element to "listen" for that event and run code when it happens.
+
+In plain HTML/JS:
+
+```html
+<button onclick="alert('Clicked!')">Click Me</button>
+```
+
+In React, we handle this in a cleaner and modern way.
+
+✅ _Event Listeners in React_
+
+In React, event names are written in camelCase (`onClick`, `onChange`, `onSubmit`, etc.).
+
+You pass a function (not a string of code) as the event handler.
+
+_Example: Button Click_
+
+```tsx
+function App() {
+  function handleClick() {
+    alert("Button was clicked!");
+  }
+
+  return <button onClick={handleClick}>Click Me</button>;
+}
+```
+
+Here:
+
+`onClick` is the event listener.
+
+`handleClick` is the function that runs when the button is clicked.
+
+✅ _Passing Inline Functions_
+
+Instead of defining separately, you can write inline:
+
+```jsx
+<button onClick={() => alert("Clicked!")}>Click Me</button>
+```
+
+✅ _Handling Input Events_
+
+```tsx
+function App() {
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    console.log("Value:", event.target.value);
+  }
+
+  return <input type="text" onChange={handleChange} />;
+}
+```
+
+`event.target.value` gives the latest text typed in the input.
+
+✅ `Common Events in React`
+
+`onClick` → when element is clicked.
+
+`onChange` → when input value changes.
+
+`onSubmit` → when form is submitted.
+
+`onMouseEnter`, `onMouseLeave` → hover events.
+
+`onKeyDown`, `onKeyUp` → keyboard events.
+
+💡 How React Events Are Different from Vanilla JS
+
+_Synthetic Events_:
+
+React wraps browser events into something called a `SyntheticEvent` (cross-browser friendly).
+
+This means your event handlers work the same in Chrome, Firefox, Safari, etc.
+
+_CamelCase naming_:
+
+React uses `onClick`, not `onclick`.
+
+React uses `onChange`, not `onchange`.
+
+_Functions only_:
+
+In React, you pass a function.
+
+In plain HTML, you could pass a string (`onclick="doSomething()"`) but React doesn’t allow that.
+
+🔑 Summary
+
+Event listeners in React let your app react to user actions.
+
+Written in camelCase and expect a function.
+
+Events come wrapped as _SyntheticEvent_ (cross-browser safe).
+
+Used for clicks, typing, submitting forms, mouse/keyboard actions, etc.
+
+❓ _Why don’t we call event handlers in React?_
+
+When you attach an event handler in React, like this:
+
+```jsx
+<button onClick={handleClick}>Click Me</button>
+```
+
+Notice you’re writing `handleClick` without parentheses.
+
+If you wrote `onClick={handleClick()}`, that would immediately run the function when React renders the component (before the user even clicks).
+
+But we don’t want it to run right away — we want it to run later, only when the event happens.
+
+So instead, we pass the function reference (`handleClick`) to React.
+React will then call it for us when the event actually occurs (like when the user clicks).
+
+✅ _Example_
+
+```tsx
+function App() {
+  function sayHello() {
+    alert("Hello!");
+  }
+
+  return <button onClick={sayHello}>Say Hello</button>;
+}
+```
+
+✅ `onClick={sayHello}` → React saves this function to call when the button is clicked.
+
+❌ `onClick={sayHello()}` → React calls it immediately during rendering, so the alert pops up before you even touch the button.
+
+## Props vs State
+
+### Props
+
+Props refer to the properties being passed _into a component_ in order for it to work correctly, similar to how a function receives parameters: "from above." A component receiving props is not allowed to modify those props (i.e. they are "immutable").
+
+### State
+
+State refers to the values that are _managed by the component_, similar to the variables declared inside a function. Any time you have changing values that should be saved/displayed, you'll likely be using state.
+
+_View_ or rather the user interface, the actual page that you get to see as a user _is a function of the state of the component_.
+
+render -> react runs your function and displays whatever gets returned. The function will only be run again if
+
+1. if it receives new props from above, or
+2. its internal state values change
+
+Our react component are simply just functions and we have to return some sort of JSX or user interface from that component, when react runs into an instance of our components, it runs that function and displays the view which the function returns.
+
+`setState` -> changing a local non-state variable doesn't cause react to re-render the component. Changing state with built-in `setState` function does.
+
+view = function(state) -> thus, when state changes and react re-runs(re-renders) your component, something new gets returned and replaces what used to be on that page.
+
+_Props vs State — The Intuition_
+
+Props = inputs you send into a component from outside (like giving instructions).
+
+State = memory that a component keeps inside itself to remember things over time.
+
+✅ _Props_
+
+Passed from parent to child.
+
+Read-only → the child component can use them but cannot change them.
+
+Makes a component reusable and configurable.
+
+Example:
+
+```tsx
+function Greeting({ name }: { name: string }) {
+  return <h1>Hello, {name}!</h1>;
+}
+
+export default function App() {
+  return (
+    <>
+      <Greeting name="Alice" />
+      <Greeting name="Bob" />
+    </>
+  );
+}
+```
+
+Here, `name` is a prop.
+
+`Greeting` doesn’t decide the `name` → the parent (App) decides and passes it down.
+
+✅ _State_
+
+Belongs inside a component.
+
+Can change over time (component re-renders when state updates).
+
+Used for data that changes because of user interaction or internal logic.
+
+Example:
+
+```tsx
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0); // state
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increase</button>
+    </div>
+  );
+}
+```
+
+`count` is state.
+
+It starts at 0, and changes whenever you click the button.
+
+The component remembers its own value, independent of parent components.
+
+🎯 Summary
+
+Props = external inputs, passed into components, unchangeable by the component.
+
+State = internal memory, managed within the component, changeable over time.
+
+Together, they make React components both configurable (props) and dynamic (state).
+
+## `useState`
+
+🧠 What is useState?
+
+`useState` is a _React Hook_ (special function).
+
+It lets a component remember values (state) between renders.
+
+Without it, components would always “forget” everything whenever they re-render.
+
+Think of `useState` as giving your component a tiny piece of memory it can hold onto.
+
+✅ Syntax
+
+```jsx
+const [value, setValue] = useState(initialValue);
+```
+
+`value` → the current state (the memory slot).
+
+`setValue` → the function you call to update that state.
+
+`initialValue` → the default value when the component first runs.
+
+🖼 _Example 1: Counter_
+
+```tsx
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0); // state starts at 0
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increase</button>
+    </div>
+  );
+}
+```
+
+`count` starts at 0.
+
+Every click calls `setCount(count + 1)`.
+
+React remembers the new value and re-renders the UI.
+
+🖼 _Example 2: Text Input_
+
+```tsx
+function NameInput() {
+  const [name, setName] = useState("");
+
+  return (
+    <div>
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Enter your name"
+      />
+      <p>Hello, {name}!</p>
+    </div>
+  );
+}
+```
+
+Here, the state (name) updates whenever you type.
+
+The component re-renders instantly to show “Hello, X!”.
+
+🔑 Key Rules of `useState`
+
+Only call Hooks (like `useState`) at the top level of your component, not inside loops/conditions.
+
+State updates are async-ish → React may batch multiple updates together.
+
+Updating state triggers a re-render of the component.
+
+🎯 Summary
+
+`useState` = gives your component a “memory slot.”
+
+You read the value with the variable (e.g., `count`).
+
+You change it with the setter function (e.g., `setCount`).
+
+Whenever state changes, React re-renders the component with the new data.
+
+🛑 _Why not just do `count = count + 1`?_
+
+If you just reassign a variable, React won’t know that something changed.
+
+JavaScript variables change in memory,
+
+but React’s UI won’t magically update — because React renders based on state, not plain variables.
+
+Example:
+
+```tsx
+function Counter() {
+  let count = 0;
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => (count = count + 1)}>Increase</button>
+    </div>
+  );
+}
+```
+
+👉 Here, clicking the button does change count in memory…
+❌ But React won’t re-render the component → the UI is stuck showing 0.
+
+✅ _Why `setState` (`setCount`) works_
+
+When you use `setCount(newValue)`:
+
+React updates its internal memory for that state.
+
+React marks the component for re-render.
+
+On the next render, React uses the new state value and updates the UI.
+
+So `setState` is like telling React:
+
+“Hey, my memory changed, please refresh the UI.”
+
+🖼 _Example Side by Side_
+
+```tsx
+// ❌ Wrong way (UI won’t update)
+let count = 0;
+<button onClick={() => (count = count + 1)}>Increase</button>;
+
+// ✅ Correct way (UI updates)
+const [count, setCount] = useState(0);
+<button onClick={() => setCount(count + 1)}>Increase</button>;
+```
+
+🔑 The Core Idea
+
+React doesn’t track plain variables, it tracks state.
+
+Plain variable changes = invisible to React.
+
+setState = React-aware update + automatic re-render.
+
+🎯 Summary:
+You must use `setState` (`setCount`) because React needs a way to know when to re-render the UI. Just reassigning variables won’t trigger re-rendering.
+
+Note: if you ever need the old value of state to help you determine the new value of state, you should pass a callback function to your state setter function instead of using state directly. This callback function will receive the old value of state as its parameter, which you can then use to determine your new value of state.
+
+🧠 The Problem
+
+React doesn’t update state immediately.
+
+State updates are asynchronous-ish → React may batch multiple updates together for performance.
+
+If you write `setCount(count + 1)` twice in a row, both updates may “see” the same old value of count.
+
+Example:
+
+```tsx
+const [count, setCount] = useState(0);
+
+<button
+  onClick={() => {
+    setCount(count + 1);
+    setCount(count + 1);
+  }}
+>
+  Increase Twice
+</button>;
+```
+
+👉 You might expect the result to be 2,
+❌ but you’ll actually get 1.
+Both calls used the stale value of count (0).
+
+✅ _The Solution: Callback Form_
+
+Instead of passing the new value directly, you pass a function that receives the previous state:
+
+```tsx
+setCount((prevCount) => prevCount + 1);
+```
+
+Now React guarantees:
+
+Each update uses the latest state, not the stale one.
+
+Works correctly even if React batches updates together.
+
+🖼 _Fixed Example_
+
+```tsx
+const [count, setCount] = useState(0);
+
+<button
+  onClick={() => {
+    setCount((prev) => prev + 1);
+    setCount((prev) => prev + 1);
+  }}
+>
+  Increase Twice
+</button>;
+```
+
+👉 Now the final result is 2 (correct ✅).
+
+🔑 Rule of Thumb
+
+If your new state does not depend on the old one → direct form is fine.
+
+```tsx
+setUser("Alice"); // just replace value
+```
+
+If your new state depends on the old one → always use the callback form.
+
+```tsx
+setCount((prev) => prev + 1);
+```
+
+🎯 Summary:
+The callback form ensures you always update from the most recent state, avoiding bugs caused by React’s async/batched updates.
+
+You have 2 options for what you can pass in to a
+state setter function (e.g. `setCount`). What are they?
+
+1.  Pass the new version of state that we want to use as the
+    replacement for the old version of state.
+2.  Pass a callback function. Must return what we want the new
+    value of state to be. Will receive the old version of state
+    as a parameter so we can use it to help determine what we want
+    the new value of state to be.
+
+🛑 _Why not directly modify state?_
+
+When you do something like this:
+
+```tsx
+const [count, setCount] = useState(0);
+
+// ❌ Directly modifying state
+count = count + 1;
+```
+
+or with objects:
+
+```tsx
+const [user, setUser] = useState({ name: "Alice" });
+
+// ❌ Direct mutation
+user.name = "Bob";
+```
+
+👉 The variable in memory does change, BUT React doesn’t notice.
+React decides whether to re-render only when you call the setter function (`setCount`, `setUser`).
+If you skip it, the component won’t re-render, and the UI stays out of sync with memory.
+
+✅ _Why the setter (setState) works_
+
+When you call `setState`:
+
+React schedules an update (it doesn’t instantly change the value).
+
+React marks the component dirty, meaning: “this needs to re-render next time.”
+
+React re-runs your component function → reads the new state → updates the UI.
+
+So the setter is like telling React about the change, instead of just changing memory silently.
+
+🔑 Key Point
+
+React’s _state is immutable_ in practice.
+
+Instead of editing it, you _replace it with a new value_ using the setter.
+
+That’s how React knows: “aha, something changed, let me refresh the UI.”
+
+🖼 _Example: Direct vs Correct_
+
+```tsx
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  // ❌ Wrong: UI won’t re-render
+  const badIncrease = () => {
+    count = count + 1;
+    console.log(count); // logs 1, but UI still shows 0
+  };
+
+  // ✅ Right: UI updates correctly
+  const goodIncrease = () => {
+    setCount((prev) => prev + 1);
+  };
+
+  return (
+    <div>
+      <p>{count}</p>
+      <button onClick={badIncrease}>Bad Increase</button>
+      <button onClick={goodIncrease}>Good Increase</button>
+    </div>
+  );
+}
+```
+
+🎯 Summary
+
+Direct modification: React doesn’t see it → no re-render.
+
+Setter function: Notifies React → React re-renders with new state.
+
+# Forms
+
+## Modern vs Classical Approach
+
+🌱 _Before React 19 — Classic Form Handling_
+
+In older React versions (before React 19), forms were handled manually:
+
+_Controlled inputs:_
+You store form values in state using `useState`.
+Every input needs an `onChange` handler to update state.
+
+_Submit handler_:
+On form submit, you prevent the default browser reload (`event.preventDefault()`) and run some function to process the form.
+
+👉 _Example (classic way)_:
+
+```tsx
+import { useState } from "react";
+
+function ContactForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const formEl = event.currentTarget;
+    const formData = new FormData(formEl);
+    console.log("Submitting:", { formData });
+    // usually you'd call an API here
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Name"
+      />
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+      />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+```
+
+Downsides:
+
+Lots of boilerplate (`useState` for every field).
+
+Manual error/loading handling.
+
+Harder to sync with server state.
+
+🚀 _React 19 — New Form Features_
+
+React 19 makes forms much simpler and more powerful with new APIs:
+
+1️⃣ _action API_
+
+Instead of writing `onSubmit` and `preventDefault`, React 19 lets you attach a function directly with the `action` prop. React automatically handles submission for you.
+
+You can now pass a function directly to the `action` attribute of `<form>`, `<input>`, or `<button>`. React uses this function to handle form submission natively—no `onSubmit` or `preventDefault`() needed.
+
+After successful submission, React resets the form automatically for uncontrolled fields.
+If needed, there's also a `requestFormReset` API to manually reset the form.
+
+👉 Example:
+
+```tsx
+function ContactForm() {
+  async function handleAction(formData: FormData) {
+    const name = formData.get("name");
+    const email = formData.get("email");
+    console.log("Submitted:", { name, email });
+    // send to backend here
+  }
+
+  return (
+    <form action={handleAction}>
+      <input name="name" placeholder="Name" />
+      <input name="email" type="email" placeholder="Email" />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+```
+
+✨ _Benefits_:
+
+No `useState` for every field.
+
+Directly reads values from `<input name="...">`.
+
+2️⃣ _`useActionState`_
+
+This hook lets you store the state returned by the `action` function.
+It’s like combining form submission with automatic state handling.
+
+👉 Example:
+
+```tsx
+import { useActionState } from "react";
+
+function SignupForm() {
+  async function signup(prevState: string | null, formData: FormData) {
+    const username = formData.get("username");
+    // simulate async check
+    if (username === "taken") {
+      return "Username already taken";
+    }
+    return "Signup successful!";
+  }
+
+  const [message, action] = useActionState(signup, null);
+
+  return (
+    <form action={action}>
+      <input name="username" placeholder="Username" />
+      <button type="submit">Sign up</button>
+      {message && <p>{message}</p>}
+    </form>
+  );
+}
+```
+
+✨ _Benefits_:
+
+Keeps track of server responses/errors directly.
+
+`action` is auto-linked to form.
+
+Makes forms stateful without `useState`.
+
+3️⃣ _useFormStatus_
+
+This hook tells you about the current status of a form submission — for example, if it’s `pending` (`loading`).
+
+👉 Example:
+
+```tsx
+import { useFormStatus } from "react";
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button type="submit" disabled={pending}>
+      {pending ? "Submitting..." : "Submit"}
+    </button>
+  );
+}
+
+function FeedbackForm() {
+  async function sendFeedback(formData: FormData) {
+    await new Promise((r) => setTimeout(r, 1000)); // simulate delay
+    console.log("Feedback:", formData.get("feedback"));
+  }
+
+  return (
+    <form action={sendFeedback}>
+      <textarea name="feedback" />
+      <SubmitButton />
+    </form>
+  );
+}
+```
+
+✨ _Benefits_:
+
+No need to manually set `isLoading`.
+
+You can disable buttons or show spinners automatically.
+
+4️⃣ _`useOptimistic`_
+
+This hook allows optimistic updates → showing instant UI changes before the server response comes back.
+If the server fails, React can roll back.
+
+👉 Example:
+
+```tsx
+import { useOptimistic } from "react";
+
+function Comments() {
+  const [comments, setComments] = useState<string[]>([]);
+  const [optimisticComments, addOptimisticComment] = useOptimistic(
+    comments,
+    (state, newComment: string) => [...state, newComment]
+  );
+
+  async function postComment(formData: FormData) {
+    const comment = formData.get("comment") as string;
+    addOptimisticComment(comment); // show instantly
+    await new Promise((r) => setTimeout(r, 1000)); // simulate API
+    setComments((c) => [...c, comment]); // confirm server state
+  }
+
+  return (
+    <>
+      <form action={postComment}>
+        <input name="comment" placeholder="Write a comment..." />
+        <button type="submit">Post</button>
+      </form>
+      <ul>
+        {optimisticComments.map((c, i) => (
+          <li key={i}>{c}</li>
+        ))}
+      </ul>
+    </>
+  );
+}
+```
+
+✨ Benefits:
+
+User sees instant feedback (no lag).
+
+Server state syncs in background.
+
+Better UX for chat apps, comments, likes, etc.
