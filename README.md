@@ -1568,7 +1568,7 @@ Setter function: Notifies React → React re-renders with new state.
 
 ## Modern vs Classical Approach
 
-🌱 _Before React 19 — Classic Form Handling_
+🌱 _Before React 19 — Classic Form Handling - Controlled Components_
 
 In older React versions (before React 19), forms were handled manually:
 
@@ -1790,3 +1790,138 @@ User sees instant feedback (no lag).
 Server state syncs in background.
 
 Better UX for chat apps, comments, likes, etc.
+
+1. What is "conditional rendering"?
+
+In React, conditional rendering means showing different UI depending on some condition (usually state or props).
+It’s like writing an if statement, but for what React should render.
+
+Example:
+
+```tsx
+{
+  isLoggedIn ? <Dashboard /> : <Login />;
+}
+```
+
+🌱 **How Data Flows in React**
+
+Think of React like a waterfall:
+
+Data flows one way — from **parent → child**.
+
+Parents can pass data down to children through props.
+
+But children can’t directly push data up to parents. Instead, they “notify” the parent, and then the parent updates its state.
+
+👉 This is called **unidirectional data flow**.
+
+🌟 **What is “Lifting State Up”**?
+
+Sometimes two sibling components need to share the same data.
+But since data only flows down, the trick is:
+
+Move the state to their closest common parent.
+
+That parent manages the state.
+
+It then passes data down via props and gives children callbacks to update it.
+
+This moving of state upwards is called “lifting the state up”.
+
+📝 **Example — Without Lifting State**
+
+Imagine two inputs that should always show the same text:
+
+```tsx
+function InputA() {
+  const [text, setText] = useState("");
+  return (
+    <input
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      placeholder="Input A"
+    />
+  );
+}
+
+function InputB() {
+  const [text, setText] = useState("");
+  return (
+    <input
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      placeholder="Input B"
+    />
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <InputA />
+      <InputB />
+    </>
+  );
+}
+```
+
+👉 Problem:
+Typing in Input A doesn’t update Input B (and vice versa).
+Each component is managing its own separate state.
+
+📝 **Example — With Lifting State Up**
+
+We fix this by moving the state to their parent:
+
+```tsx
+import { useState } from "react";
+
+function InputBox({
+  label,
+  text,
+  onTextChange,
+}: {
+  label: string;
+  text: string;
+  onTextChange: (v: string) => void;
+}) {
+  return (
+    <div>
+      <label>{label}: </label>
+      <input value={text} onChange={(e) => onTextChange(e.target.value)} />
+    </div>
+  );
+}
+
+export default function App() {
+  const [sharedText, setSharedText] = useState("");
+
+  return (
+    <>
+      <InputBox
+        label="Input A"
+        text={sharedText}
+        onTextChange={setSharedText}
+      />
+      <InputBox
+        label="Input B"
+        text={sharedText}
+        onTextChange={setSharedText}
+      />
+
+      <p>Shared Value: {sharedText}</p>
+    </>
+  );
+}
+```
+
+👉 Now:
+
+State lives in App (the parent).
+
+Both children (InputBox) receive the value as props.
+
+When a child changes input, it calls the parent’s setSharedText.
+
+Parent updates its state → re-renders children → both inputs stay in sync.

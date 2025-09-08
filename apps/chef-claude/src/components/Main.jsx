@@ -7,17 +7,17 @@ function Main() {
     <li key={`${ingredient}-${index}`}>{ingredient}</li>
   ));
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    const formEl = e.currentTarget;
-    const formData = new FormData(formEl);
+  const addIngredient = formData => {
     const newIngredient = formData.get('ingredient');
     setIngredients(prevIngredients => [...prevIngredients, newIngredient]);
   }
 
   return (
     <main>
-        <form className="add-ingredient-form" onSubmit={handleSubmit}>
+        <form 
+          className="add-ingredient-form" 
+          action={addIngredient}
+          >
             <input
                 type="text"
                 placeholder="e.g. Oregano"
@@ -26,9 +26,18 @@ function Main() {
             />
             <button>Add ingredient</button>
         </form>
-        <ul>
-          {ingredientListItems}
-        </ul>
+        {ingredients.length > 0 && <section className="ingredient-section">
+          <h2>Ingredients on hand:</h2>
+          <ul className="ingredients-list" aria-label="polite">{ingredientListItems}</ul>
+          {ingredients.length > 3 && <div className="get-recipe-container">
+            <div>
+              <h3>Ready for a recipe?</h3>
+              <p>Generate a recipe from your list of ingredients.</p>
+            </div>
+            <button>Get a recipe</button>
+          </div>}
+        </section>}
+       
     </main>
   )
 }
