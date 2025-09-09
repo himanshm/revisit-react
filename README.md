@@ -1925,3 +1925,76 @@ Both children (InputBox) receive the value as props.
 When a child changes input, it calls the parent’s setSharedText.
 
 Parent updates its state → re-renders children → both inputs stay in sync.
+
+🌱 **What is “Derived State”**?
+
+👉 **Derived state** is when you create a piece of React state that’s calculated from existing state or props instead of being the actual source of truth.
+
+Example:
+
+```tsx
+function Cart({ items }: { items: number[] }) {
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    setTotal(items.reduce((a, b) => a + b, 0));
+  }, [items]);
+
+  return <p>Total: {total}</p>;
+}
+```
+
+Here, `total` is derived from `items`.
+But notice—we’re duplicating information:
+
+`items` already contains all the info.
+
+`total` is just a calculation from it.
+
+⚠️* Why Derived State is Probably Not Needed*
+
+It causes duplication of data
+You now have two sources of truth: `items` and `total`
+
+They can easily get out of sync if you forget to update one of them.
+
+It adds unnecessary complexity
+You don’t need an extra state + effect.
+Just compute it directly inside render.
+
+React is fast at recalculating
+React re-renders anyway, so calculating a simple value on the fly is usually cheap.
+
+✅ **The Better Way (Avoid Derived State)**
+
+Instead of storing total in state, just calculate it from items when rendering:
+
+```tsx
+function Cart({ items }: { items: number[] }) {
+  const total = items.reduce((a, b) => a + b, 0);
+
+  return <p>Total: {total}</p>;
+}
+```
+
+Here:
+
+`items` is the single source of truth.
+
+`total` is derived inline — no need for state or effects.
+
+🌟 When Might You Use Derived State?
+
+If the calculation is extremely expensive (like millions of records), you could cache it using `useMemo`.
+
+If you need to keep track of previous values (not just recalculate from props).
+
+But in most cases → don’t store derived state. Just compute it directly.
+
+⚡ TL;DR
+
+Derived state = state that’s computed from other state/props.
+
+Usually not needed because it duplicates data → risk of inconsistency.
+
+Better: compute on the fly or use `useMemo` for performance.

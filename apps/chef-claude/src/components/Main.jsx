@@ -1,15 +1,37 @@
 import { useState } from "react"
+import IngredientsList from './IngredientsList';
+import ClaudeRecipe from "./ClaudeRecipe";
+import { getRecipeFromMistral } from '../ai';
 
 function Main() {
   const [ingredients, setIngredients] = useState([]);
-
-  const ingredientListItems = ingredients.map((ingredient, index) => (
-    <li key={`${ingredient}-${index}`}>{ingredient}</li>
-  ));
+  const [recipeText, setRecipeText] = useState(''); // string or null
+  const [isLoading, setIsLoading] = useState(false); // boolean
+  const [error, setError] = useState(''); // string or null
 
   const addIngredient = formData => {
     const newIngredient = formData.get('ingredient');
     setIngredients(prevIngredients => [...prevIngredients, newIngredient]);
+  }
+
+  const fetchRecipe = async () => {
+    setIsLoading(true);
+    setError(null);
+    setRecipeText(null);
+
+    try {
+      const text = await getRecipeFromMistral(ingredients);
+      if (text) {
+        setRecipeText(text ?? 'No recipe returned!')
+    } 
+    } catch (err) {
+        console.error(err);
+        setError(
+          err instanceof Error ? err.message : 'Failed to get recipe'
+        );
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -26,18 +48,10 @@ function Main() {
             />
             <button>Add ingredient</button>
         </form>
-        {ingredients.length > 0 && <section className="ingredient-section">
-          <h2>Ingredients on hand:</h2>
-          <ul className="ingredients-list" aria-label="polite">{ingredientListItems}</ul>
-          {ingredients.length > 3 && <div className="get-recipe-container">
-            <div>
-              <h3>Ready for a recipe?</h3>
-              <p>Generate a recipe from your list of ingredients.</p>
-            </div>
-            <button>Get a recipe</button>
-          </div>}
-        </section>}
-       
+        <IngredientsList ingredients={ingredients} onRequestRecipe={fetchRecipe} />
+        {isLoading && <p>Thinking...</p>}
+        {error && <p role="alert">Error: {error}</p>}
+        {recipeText && <ClaudeRecipe recipeMarkdown={recipeText} />}
     </main>
   )
 }
