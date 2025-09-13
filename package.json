@@ -8,6 +8,7 @@
     "dev:facts": "vite --config vite.config.js apps/react-facts",
     "dev:journal": "vite --config vite.config.js apps/travel-journal",
     "dev:claude": "vite --config vite.config.js apps/chef-claude",
+    "dev:meme": "vite --config vite.config.js apps/meme-generator",
     "lint": "eslint ."
   },
   "dependencies": {
