@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 const Main = () => {
     const initialState = {
         imageUrl: 'http://i.imgflip.com/1bij.jpg',
@@ -6,15 +6,32 @@ const Main = () => {
         bottomText: 'Walk into Mordor'
     }
     const [meme, setMeme] = useState(initialState)
+    const [allMemes, setAllMemes] = useState([]);
 
     const handleChange = event => {
-        console.log(event.currentTarget)
         const { value, name } = event.currentTarget;
         setMeme(prevMeme => ({
             ...prevMeme,
             [name]: value,
         }));
     }
+
+    const handleGetMemeClick = () => {
+        const newMemeIndex = Math.floor(Math.random() * allMemes.length);
+        const { url: newMemeUrl } = allMemes[newMemeIndex];
+        setMeme(prevMeme => ({
+            ...prevMeme,
+            imageUrl: newMemeUrl,
+        }));
+    }
+
+    useEffect(() => {
+        fetch('https://api.imgflip.com/get_memes')
+            .then(res => res.json())
+            .then(data => setAllMemes(data.data.memes))
+            .catch(err => console.error('Error fetching memes data: ', err));
+    }, []);
+
   return (
     <main>
         <div className="form">
@@ -38,7 +55,7 @@ const Main = () => {
                 />
             </label>
 
-            <button>Get a new meme image 🖼</button>
+            <button onClick={handleGetMemeClick}>Get a new meme image 🖼</button>
         </div>
         <div className="meme">
             <img src={meme.imageUrl} />
