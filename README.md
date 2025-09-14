@@ -1564,9 +1564,9 @@ Direct modification: React doesn’t see it → no re-render.
 
 Setter function: Notifies React → React re-renders with new state.
 
-# Forms
+## Forms
 
-## Modern vs Classical Approach
+### Modern vs Classical Approach
 
 🌱 _Before React 19 — Classic Form Handling - Controlled Components_
 
@@ -1951,7 +1951,7 @@ But notice—we’re duplicating information:
 
 `total` is just a calculation from it.
 
-⚠️* Why Derived State is Probably Not Needed*
+⚠️ **Why Derived State is Probably Not Needed**
 
 It causes duplication of data
 You now have two sources of truth: `items` and `total`
@@ -1998,3 +1998,520 @@ Derived state = state that’s computed from other state/props.
 Usually not needed because it duplicates data → risk of inconsistency.
 
 Better: compute on the fly or use `useMemo` for performance.
+
+### 🌱 Forms in React: Controlled vs. Uncontrolled
+
+When we talk about forms (like `<input>`, `<textarea>`, `<select>`), there are two ways React can deal with them:
+
+1️⃣ **Uncontrolled Components**
+
+The browser (DOM) keeps track of the value.
+
+React does not manage the input’s current value.
+
+You grab the value only when you need it (e.g., on form submit).
+
+👉 Example:
+
+```tsx
+function UncontrolledForm() {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    console.log("Value:", inputRef.current?.value); // get value directly from DOM
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text" ref={inputRef} />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+✨ Key point:
+The input has its own state inside the DOM, not in React.
+This is the default HTML behavior.
+
+2️⃣ **Controlled Components**
+
+React is in charge of the value.
+
+The input’s value always reflects a React state variable.
+
+On every keystroke, React updates state → state updates the input.
+
+👉 Example:
+
+```tsx
+function ControlledForm() {
+  const [name, setName] = useState("");
+
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    console.log("Value:", name); // from React state
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+✨ Key point:
+React state is the single source of truth.
+If you update state, the input updates automatically.
+
+# Side Effect
+
+## Functional Programming in react
+
+🧑‍💻 **What is Functional Programming (FP)?**
+
+Functional programming is a coding style where you:
+
+Build your app using **functions** instead of classes or objects.
+
+Treat functions as “first-class citizens” (you can pass them around like data).
+
+Prefer **pure functions** → same input always gives the same output, no side effects.
+
+🌱 **How does React use Functional Programming?**
+
+React leans heavily on FP ideas:
+
+Components are just functions
+
+```tsx
+function Greeting({ name }: { name: string }) {
+  return <h1>Hello, {name}!</h1>;
+}
+```
+
+This is a pure function:
+Input (prop `name`) → Output (UI).
+No side effects, no hidden state.
+
+**Immutability**
+Instead of modifying data, React encourages creating **new copies**.
+
+```tsx
+const numbers = [1, 2, 3];
+const doubled = numbers.map(n => n \* 2); // ✅ pure
+// instead of numbers.push(4) (❌ mutates original array)
+```
+
+Why? Because React can easily detect changes if data is replaced, not mutated.
+
+**Hooks follow FP principles**
+
+`useState`, `useReducer`, `useEffect` → all work in terms of functions.
+
+Example: updating state using a callback with previous state:
+
+```tsx
+const [count, setCount] = useState(0);
+
+setCount((prev) => prev + 1);
+```
+
+This avoids relying on outside variables → keeps the update pure.
+
+**Composition instead of inheritance**
+
+In OOP, you might extend a class. In React (FP style), you combine functions:
+
+```tsx
+function Button({ children }: { children: React.ReactNode }) {
+  return <button>{children}</button>;
+}
+
+function App() {
+  return <Button>Click me</Button>;
+}
+```
+
+You "compose" small components (functions) into bigger ones.
+
+🚀 **Why Functional Programming Works Well with React**
+
+UI = a pure function of state and props
+
+Predictable → easy to test and debug
+
+Easy to reuse and compose
+
+Avoids bugs from shared mutable state
+
+✅ In one line:
+Functional programming in React means thinking of your UI as a tree of pure functions that always return the same UI for the same input, avoiding side effects and favoring immutability.
+
+What are React's primary tasks?
+
+Work with the DOM/Browser to render UI to the page
+
+Manage state for us between render cycles(i.e. state values are "remembered" from one render to the next)
+
+Keep the UI updated whenever state or props changes occur
+
+What can't react handle on its own?
+
+- (Out)side effects!
+
+  - local storage
+  - API/database interactions
+  - Subscriptions (e.g. websocket connections)
+  - Basically anything that React isn't in charge of
+
+Effects are one of the **Escape Hatches** let us “step outside” React and connect to external systems
+
+How to synchronize components with external systems?
+
+_Effects_ let us run some code after rendering so that you can synchronize your component with some system outside of React.
+
+From Docs -> "Effects let you specify side effects that are caused by rendering itself, rather than by a particular event. Sending a message in the chat is an event because it is directly caused by the user clicking a specific button. However, setting up a server connection is an Effect because it should happen no matter which interaction caused the component to appear. Effects run at the end of a commit after the screen updates."
+
+**First: What is a "side effect"?**
+
+A **side effect** is anything your component does outside of returning UI.
+Examples:
+
+- Fetching data from an API
+
+- Subscribing to a WebSocket
+
+- Manually changing the DOM
+
+- Logging to the console
+
+These are not pure rendering — they affect the outside world.
+
+🟢 **Event-based side effects**
+
+Sometimes effects happen because of an event:
+
+```tsx
+function Button() {
+  function handleClick() {
+    console.log("Button clicked!");
+  }
+  return <button onClick={handleClick}>Click</button>;
+}
+```
+
+👉 Here, the side effect (`console.log`) happens only when the event (`click`) occurs.
+
+🔵 **Render-based side effects (what the docs mean)**
+
+Other times, you want something to happen just because the component rendered (not because of a button click).
+
+Example:
+
+```tsx
+import { useEffect, useState } from "react";
+
+function ChatRoom({ roomId }: { roomId: string }) {
+  const [messages, setMessages] = useState<string[]>([]);
+
+  useEffect(() => {
+    // ✅ This effect runs whenever roomId changes (or component mounts)
+    const connection = createConnection(roomId);
+    connection.connect();
+
+    return () => connection.disconnect();
+  }, [roomId]);
+
+  return <h1>Welcome to {roomId}</h1>;
+}
+```
+
+Here, we’re not waiting for a user event.
+
+Just by rendering `<ChatRoom roomId="general" />`, React triggers the effect:
+
+Connect to the chat room
+
+Disconnect when leaving
+
+This is what the docs mean by:
+
+“Effects let you specify side effects that are caused by rendering itself, rather than by a particular event.”
+
+⚡ **Why this distinction matters**
+
+Event handlers = side effects triggered by specific user actions.
+
+Effects (`useEffect`) = side effects that must always happen whenever a component renders/updates/unmounts, to keep the UI in sync with the outside world.
+
+✅ In short:
+
+If something should happen **because the component rendered/updated** → put it in an **Effect**.
+
+If something should happen **only when a user does something** → put it in an **event handler**.
+
+**Don’t rush to add Effects to your components**. Keep in mind that Effects are typically used to “step out” of your React code and synchronize with some external system. If your Effect only adjusts some state based on other state, you might not need an Effect.
+
+Every time your component renders, React will update the screen and then run the code inside useEffect. In other words, **`useEffect` “delays” a piece of code from running until that render is reflected on the screen**.
+
+By default, Effects run after _every_ render. This is why code like this will **produce an infinite loop**:
+
+```tsx
+const [count, setCount] = useState(0);
+useEffect(() => {
+  setCount(count + 1);
+});
+```
+
+Effects run as a _result_ of rendering. Setting state _triggers_ rendering. Setting state immediately in an Effect is like plugging a power outlet into itself. The Effect runs, it sets the state, which causes a re-render, which causes the Effect to run, it sets the state again, this causes another re-render, and so on.
+
+Effects should usually synchronize your components with an external system. If there’s no external system and you only want to adjust some state based on other state, you might not need an Effect.
+
+You can tell React to \**skip unnecessarily re-running the *Effect\* by specifying an array of dependencies as the second argument to the `useEffect` call.
+
+The dependency array can contain multiple dependencies. React will only skip re-running the Effect if all of the dependencies you specify have exactly the same values as they had during the previous render. React compares the dependency values using the `Object.is` comparison.
+
+The behaviors without the dependency array and with an empty [] dependency array are different:
+
+```tsx
+useEffect(() => {
+  // This runs after every render
+});
+
+useEffect(() => {
+  // This runs only on mount (when the component appears)
+}, []);
+
+useEffect(() => {
+  // This runs on mount *and also* if either a or b have changed since the last render
+}, [a, b]);
+```
+
+```tsx
+useEffect(() => {
+  const connection = createConnection();
+  connection.connect();
+}, []);
+```
+
+**The code inside the Effect does not use any props or state, so your dependency array is [] (empty). This tells React to only run this code when the component “mounts”, i.e. appears on the screen for the first time.**
+
+📘 **Synchronizing with Effects (`useEffect`)**
+
+1. What are Effects in React?
+
+In React, your component’s rendering logic must be pure:
+
+Same input → same output (JSX).
+
+No data fetching, subscriptions, logging, or manual DOM changes inside the render.
+
+Effects let you handle side effects: anything your component does outside of rendering.
+Examples:
+
+- Fetching data
+
+- Subscribing/unsubscribing to a service
+
+- Controlling a non-React component (like a map or video player API)
+
+- Logging
+
+Difference:
+
+Rendering logic = “what the UI looks like.”
+
+Event handlers = things triggered by user actions (click, submit).
+
+Effects = things that happen automatically because the component rendered or updated.
+
+2. Three Steps for Using `useEffect`
+
+- Step 1: **Declare an effect**
+
+You call `useEffect` inside your component to run code after rendering:
+
+```tsx
+import { useEffect } from "react";
+
+function Welcome() {
+  useEffect(() => {
+    document.title = "Hello, world!";
+  });
+  return <h1>Hello!</h1>;
+}
+```
+
+Runs after the component renders.
+
+Keeps rendering pure.
+
+- Step 2: **Specify dependencies**
+
+You control when the effect re-runs by passing a dependency array:
+
+```tsx
+function ChatRoom({ roomId }: { roomId: string }) {
+  useEffect(() => {
+    const connection = createConnection(roomId);
+    connection.connect();
+  }, [roomId]); // 👈 runs again only when roomId changes
+
+  return <h1>Chatting in {roomId}</h1>;
+}
+```
+
+No deps → runs after every render.
+
+Empty array [] → runs only once on mount.
+
+With deps [roomId] → runs when roomId changes.
+
+- Step 3: **Cleanup when needed**
+
+Some effects (like subscriptions or timers) need teardown when the component unmounts or before the effect re-runs:
+
+```tsx
+useEffect(() => {
+  const connection = createConnection(roomId);
+  connection.connect();
+
+  return () => {
+    connection.disconnect(); // 👈 cleanup
+  };
+}, [roomId]);
+```
+
+This prevents memory leaks and stale subscriptions.
+
+3. Practical Examples
+   a) Controlling a non-React component
+
+   ```tsx
+   useEffect(() => {
+     const player = initVideoPlayer("#video");
+     player.play();
+   }, []);
+   ```
+
+   b) Subscribing / Unsubscribing
+
+   ```tsx
+   useEffect(() => {
+     function handleResize() {
+       console.log("Window resized");
+     }
+     window.addEventListener("resize", handleResize);
+
+     return () => window.removeEventListener("resize", handleResize);
+   }, []);
+   ```
+
+   c) Fetching Data
+
+   ```tsx
+   useEffect(() => {
+     let ignore = false;
+
+     fetch("/api/user")
+       .then((res) => res.json())
+       .then((data) => {
+         if (!ignore) {
+           console.log(data);
+         }
+       });
+
+     return () => {
+       ignore = true; // 👈 prevents setting state after unmount
+     };
+   }, []);
+   ```
+
+4. **When (and When Not) to Use Effects**
+
+✅ Use `useEffect` when:
+
+You need to synchronize React with an external system (API, DOM, subscription, logging).
+
+❌ Avoid useEffect when:
+
+You can calculate something from props or state (derived data).
+
+You’re just transforming values (better to do it directly in render or with useMemo).
+
+You’re handling direct user events (use event handlers instead).
+
+Common pitfalls:
+
+Forgetting dependencies → stale data.
+
+Adding unnecessary dependencies → infinite loops.
+
+Doing logic in effects that could be done during render.
+
+5. Effects in Development vs Production
+
+In development, React runs each effect twice (mount → cleanup → mount again) because of Strict Mode.
+
+Helps catch bugs like missing cleanups.
+
+In production, effects run only once per render cycle.
+
+6. Best Practices for Dependency Arrays
+
+Always include everything you use inside the effect (variables, props, state).
+
+React’s linter (ESLint `react-hooks/exhaustive-deps`) helps catch mistakes.
+
+To avoid bugs:
+
+Functions inside effects → either declare them inside or use `useCallback`.
+
+Expensive calculations → memoize with `useMemo`.
+
+If something shouldn’t be a dependency, rethink your design (usually means the logic belongs elsewhere).
+
+⚡ In short: useEffect is React’s way of saying:
+“Run this extra work after rendering, keep it in sync with my component, and clean up after yourself.”
+
+Here’s a visual flow diagram of how React handles `useEffect`:
+
+- Render: React builds your UI.
+
+- Effect: After rendering, `useEffect` runs to handle side effects (like fetching data or subscribing).
+
+- Cleanup: Before running the effect again (or when the component unmounts), React calls the cleanup function (if provided).
+
+- Re-render: If state/props change, React renders again, and the cycle continues.
+
+- Unmount: When the component is removed from the screen, cleanup runs one final time.
+
+🟢 Mount vs Unmount in Simple Terms
+
+- Mount = When a component is first added to the UI.
+
+  - Example: `<ChatRoom />` appears on the screen.
+
+  - Effects run after this initial render.
+
+- Unmount = When a component is removed from the UI.
+
+  - Example: Navigating away from the chat page removes `<ChatRoom />`.
+
+  - Cleanup runs here to avoid leaks (unsubscribe, stop timers, disconnect sockets).
+
+✅ So:
+
+- On mount → render → effect runs.
+
+- On update → render → cleanup → effect runs again.
+
+- On unmount → cleanup runs one last time.
