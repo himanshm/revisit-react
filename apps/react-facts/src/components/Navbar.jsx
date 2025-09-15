@@ -1,4 +1,4 @@
-import reactLogo from '../assets/react.svg'
+import reactLogo from '../assets/react.svg';
 
 const Navbar = () => {
   return (
@@ -8,7 +8,7 @@ const Navbar = () => {
         <span>ReactFacts</span>
       </nav>
     </header>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

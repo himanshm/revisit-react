@@ -4,10 +4,10 @@ import Navbar from './components/Navbar';
 const App = () => {
   return (
     <>
-        <Navbar />
-        <Main />
+      <Navbar />
+      <Main />
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;

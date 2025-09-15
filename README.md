@@ -2165,6 +2165,10 @@ Keep the UI updated whenever state or props changes occur
 
 What can't react handle on its own?
 
+## Escape Hatches
+
+### Effects
+
 - (Out)side effects!
 
   - local storage
@@ -2564,3 +2568,252 @@ React.useEffect(() => {
   fetchData();
 }, []);
 ```
+
+### Referencing values with _Refs_
+
+**When you want a component to “remember” some information, but you don’t want that information to trigger new renders, you can use a _ref_**.
+
+#### Adding a ref to your component
+
+You can add a ref to your component by importing the useRef Hook from React:
+
+```tsx
+import { useRef } from "react";
+```
+
+Inside your component, call the `useRef` Hook and pass the initial value that you want to reference as the only argument. For example, here is a `ref` to the value 0:
+
+```tsx
+const ref = useRef(0);
+```
+
+`useRef` returns an object like this:
+
+```tsx
+{
+  current: 0; // The value you passed to useRef
+}
+```
+
+You can access the current value of that ref through the `ref.current` property. This value is intentionally **mutable**, meaning you can both read and write to it. It’s like a secret pocket of your component that React doesn’t track. (This is what makes it an “escape hatch” from React’s one-way data flow)
+
+Here, The ref points to a number, but, like state, you could point to anything: a string, an object, or even a function. Unlike state, ref is a plain JavaScript object with the `current` property that you can read and modify.
+
+The component doesn’t re-render with every change in ref. Like state, refs are retained by React between re-renders. However, setting state re-renders a component. Changing a ref does not!
+
+When a piece of information is used for rendering, keep it in state. When a piece of information is only needed by event handlers and changing it doesn’t require a re-render, using a ref may be more efficient.
+
+#### Differences between refs and state
+
+- refs -> `useRef(initialValue)` returns `{ current: initialValue }`
+  state -> `useState(initialValue)` returns the current value of a state variable and a state setter function ( `[value, setValue]`)
+
+- refs -> Doesn’t trigger re-render when you change it.
+  state -> Triggers re-render when you change it.
+
+- refs -> Mutable—you can modify and update `current`’s value outside of the rendering process.
+  state -> ”Immutable”—you must use the state setting function to modify state variables to queue a re-render.
+
+- refs -> You shouldn’t read (or write) the current value during rendering.
+  state -> You can read state at any time. However, each render has its own snapshot of state which does not change.
+
+- State
+
+  - Managed by React.
+
+    - Each render gets its own snapshot (a fixed copy) of state.
+
+    - That snapshot never changes during that render.
+
+  Example:
+
+  ```tsx
+  function Counter() {
+    const [count, setCount] = useState(0);
+
+    console.log("render", count);
+
+    return <button onClick={() => setCount(count + 1)}>{count}</button>;
+  }
+  ```
+
+  Here’s what happens:
+
+  `count = 0` → render shows 0.
+
+  Click → `setCount(1)` → React re-renders.
+
+  New render: `count = 1`.
+
+  👉 Inside render, count is frozen. It won’t change until React renders again.
+
+  If you tried to implement this with a ref, React would never re-render the component, so you’d never see the count change! This is why reading `ref.current` during render leads to unreliable code. If you need that, use state instead.
+
+  ```tsx
+  import { useRef } from "react";
+
+  export default function Counter() {
+    let countRef = useRef(0);
+
+    function handleClick() {
+      // This doesn't re-render the component!
+      countRef.current = countRef.current + 1;
+    }
+
+    return (
+      <button onClick={handleClick}>
+        You clicked {countRef.current} times
+      </button>
+    );
+  }
+  ```
+
+- Refs
+
+  A ref is like a little box (`{ current: ... }`) that React does not track for re-rendering.
+
+  Unlike state, refs can change without triggering a re-render.
+
+  You can use them to “hold” values across renders (like timers, DOM nodes).
+
+  ```tsx
+  function Timer() {
+    const intervalRef = useRef<number | null>(null);
+
+    useEffect(() => {
+      intervalRef.current = window.setInterval(() => {
+        console.log("tick");
+      }, 1000);
+
+      return () => clearInterval(intervalRef.current!);
+    }, []);
+
+    return <p>Timer running...</p>;
+  }
+  ```
+
+⚠️ **Why “Don’t Read/Write Refs During Rendering”**?
+
+If you do this:
+
+```tsx
+function Example() {
+  const myRef = useRef(0);
+  myRef.current = myRef.current + 1; // ❌ modifying during render
+  return <p>{myRef.current}</p>;
+}
+```
+
+You’re mutating the ref while React is still calculating the UI.
+
+React expects rendering to be pure (no side effects, no mutations).
+
+This can cause unpredictable UI or mismatches between renders.
+
+👉 Correct way: update refs inside event handlers or effects, not during render.
+
+✅ So in one line:
+
+- State: Safe to read in render. But each render only sees its own snapshot (doesn’t magically update mid-render).
+
+- Refs: Can change any time, but don’t read/write them inside render, because render must stay pure.
+
+#### How does useRef work inside?
+
+Although both `useState` and `useRef` are provided by React, in principle `useRef` could be implemented on top of `useState`. You can imagine that inside of React, useRef is implemented like this:
+
+```tsx
+// Inside of React
+function useRef(initialValue) {
+  const [ref, unused] = useState({ current: initialValue });
+  return ref;
+}
+```
+
+During the first render, `useRef` returns `{ current: initialValue }`. This object is stored by React, so during the next render the same object will be returned. Note how the state setter is unused in this example. It is unnecessary because `useRef` always needs to return the same object!
+`useRef` can be thought of a regular state variable without a setter.
+
+- **In Object-Oriented Programming (OOP)**
+
+  If you’ve ever written a class, you store data in instance fields (properties that belong to a specific object).
+
+  Example in JavaScript with a class component:
+
+  ```tsx
+  class Timer extends React.Component {
+    intervalId: number | null = null; // 👈 instance field
+
+    componentDidMount() {
+      this.intervalId = window.setInterval(() => {
+        console.log("tick");
+      }, 1000);
+    }
+
+    componentWillUnmount() {
+      clearInterval(this.intervalId!);
+    }
+
+    render() {
+      return <p>Timer running...</p>;
+    }
+  }
+  ```
+
+  - Here, `this.intervalId` is an instance field.
+
+  - It belongs to this component instance and can be read/written across methods.
+
+- **In Functional Components with Refs**
+
+  Functional components don’t have this.
+  But refs give you something very similar: a “box” that persists across renders.
+
+  ```tsx
+  function Timer() {
+    const intervalRef = useRef<number | null>(null); // 👈 like an instance field
+
+    useEffect(() => {
+      intervalRef.current = window.setInterval(() => {
+        console.log("tick");
+      }, 1000);
+
+      return () => clearInterval(intervalRef.current!);
+    }, []);
+
+    return <p>Timer running...</p>;
+  }
+  ```
+
+  - Here, `intervalRef.current` is just like `this.intervalId` in the class.
+
+  - It’s a persistent value that sticks around between renders.
+
+In classes, you’d write `this.something`.
+
+In functional components, you write `somethingRef.current`.
+
+Both are ways to store mutable values tied to a specific component instance.
+
+### Manipulating the DOM with Refs
+
+#### Getting a ref to the node
+
+To access a DOM node managed by React, first, import the `useRef` Hook:
+
+```tsx
+import { useRef } from "react";
+```
+
+Then, use it to declare a ref inside your component:
+
+```tsx
+const myRef = useRef(null);
+```
+
+Finally, pass your ref as the ref attribute to the JSX tag for which you want to get the DOM node:
+
+```tsx
+<div ref={myRef}>
+```
+
+The `useRef` Hook returns an object with a single property called `current`. Initially, `myRef.current` will be null. When React creates a DOM node for this `<div>`, React will put a reference to this node into `myRef.current`. You can then access this DOM node from your event handlers and use the built-in browser APIs defined on it.
