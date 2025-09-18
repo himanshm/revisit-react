@@ -9,6 +9,8 @@
     "dev:journal": "vite --config vite.config.js apps/travel-journal",
     "dev:claude": "vite --config vite.config.js apps/chef-claude",
     "dev:meme": "vite --config vite.config.js apps/meme-generator",
+    "dev:tenzies": "vite --config vite.config.js apps/tenzies",
+    "dev:endgame": "vite --config vite.config.js apps/assembly-endgame",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

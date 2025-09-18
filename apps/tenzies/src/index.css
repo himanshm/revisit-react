@@ -1,0 +1,42 @@
+/* Base font sizing: 1rem = 10px */
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+/* Inherit box-sizing everywhere */
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* Body defaults */
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  font-family: 'Inter', sans-serif;
+  color: #F5F5F5;
+  background-color: #0B2434;
+
+  /* centering */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* div#root {
+  height: 100%;
+  width: 100%;
+  max-height: 60rem;
+  max-width: 60rem;
+} */
+
+main {
+  width: min(90vw, 60rem);
+  height: min(90vh, 60rem);
+  background-color: #F5F5F5;
+  border-radius: 5px;
+  /* height: 100%; */
+}
