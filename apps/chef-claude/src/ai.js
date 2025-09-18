@@ -33,7 +33,10 @@ export const getRecipeFromChefClaude = async ingredientsArr => {
     max_tokens: 1024,
     system: SYSTEM_PROMPT,
     messages: [
-      { role: 'user', content: `I have ${ingredientsString}. Please give me a recipe you'd recommend I make!` }
+      {
+        role: 'user',
+        content: `I have ${ingredientsString}. Please give me a recipe you'd recommend I make!`
+      }
     ]
   });
   return msg.content[0].text;
@@ -48,7 +51,10 @@ export const getRecipeFromMistral = async ingredientsArr => {
       model: 'mistralai/Mistral-7B-Instruct-v0.3',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: `I have ${ingredientsString}. Please give me a recipe you'd recommend I make!` }
+        {
+          role: 'user',
+          content: `I have ${ingredientsString}. Please give me a recipe you'd recommend I make!`
+        }
       ],
       max_tokens: 1024
     });

@@ -6,4 +6,5 @@ export const generateDie = () => ({
   isHeld: false
 });
 
-export const generateAllNewDice = count => Array.from({ length: count }, generateDie);
+export const generateAllNewDice = count =>
+  Array.from({ length: count }, generateDie);

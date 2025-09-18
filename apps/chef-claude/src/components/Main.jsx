@@ -43,10 +43,19 @@ function Main() {
   return (
     <main>
       <form className="add-ingredient-form" action={addIngredient}>
-        <input type="text" placeholder="e.g. Oregano" aria-label="Add ingredient" name="ingredient" />
+        <input
+          type="text"
+          placeholder="e.g. Oregano"
+          aria-label="Add ingredient"
+          name="ingredient"
+        />
         <button>Add ingredient</button>
       </form>
-      <IngredientsList ingredients={ingredients} onRequestRecipe={fetchRecipe} ref={recipeSectionRef} />
+      <IngredientsList
+        ingredients={ingredients}
+        onRequestRecipe={fetchRecipe}
+        ref={recipeSectionRef}
+      />
       {isLoading && <p>Thinking...</p>}
       {error && <p role="alert">Error: {error}</p>}
       {recipeText && <ClaudeRecipe recipeMarkdown={recipeText} />}

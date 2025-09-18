@@ -2817,3 +2817,41 @@ Finally, pass your ref as the ref attribute to the JSX tag for which you want to
 ```
 
 The `useRef` Hook returns an object with a single property called `current`. Initially, `myRef.current` will be null. When React creates a DOM node for this `<div>`, React will put a reference to this node into `myRef.current`. You can then access this DOM node from your event handlers and use the built-in browser APIs defined on it.
+
+#### Side Note - 🔑 What a closure is
+
+A closure happens when a function “remembers” variables from the scope in which it was created, even after that scope is gone.
+
+Example:
+```ts
+function makeGreeter(name: string) {
+  return function greet() {
+    console.log("Hello " + name);
+  };
+}
+
+const greetSam = makeGreeter("Sam");
+greetSam(); // → "Hello Sam"
+```
+
+Here, `greet` “closes over” the variable name.
+Even though `makeGreeter` has finished running, `greet` keeps access to `name`.
+
+```tsx
+<Die
+  value={die.value}
+  isHeld={die.isHeld}
+  hold={() => hold(die.id)}
+/>
+```
+
+That `() => hold(die.id)` is a closure.
+It “closes over” the `die.id` value from the map loop, so when the button is clicked, React can still access the correct id, even though the map function finished running long ago.
+
+🧠 **Why we say closed-over**
+
+Closed: the function “locks in” the surrounding variables.
+
+Over: it’s “hovering over” outer scope, capturing those variables.
+
+So your hold callback isn’t just a plain function — it’s a function plus the environment it captured.

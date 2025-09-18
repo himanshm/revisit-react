@@ -3,7 +3,9 @@ import Header from './components/Header';
 import data from './data';
 
 export default function App() {
-  const renderTravelEntry = data.map(entry => <TravelCard key={entry.id} entryData={entry} />);
+  const renderTravelEntry = data.map(entry => (
+    <TravelCard key={entry.id} entryData={entry} />
+  ));
   return (
     <>
       <Header />

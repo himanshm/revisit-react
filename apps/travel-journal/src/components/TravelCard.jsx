@@ -11,9 +11,18 @@ export default function Entry(props) {
 
       <div className="journal-entry__content">
         <div className="journal-entry__location">
-          <img src={locationIcon} alt="location-icon" className="journal-entry__icon" />
+          <img
+            src={locationIcon}
+            alt="location-icon"
+            className="journal-entry__icon"
+          />
           <span className="journal-entry__country">{country}</span>
-          <a href={googleMapsLink} target="_blank" rel="noopener noreferrer" className="journal-entry__map-link">
+          <a
+            href={googleMapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="journal-entry__map-link"
+          >
             View on Google Maps
           </a>
         </div>

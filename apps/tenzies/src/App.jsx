@@ -3,12 +3,29 @@ import Die from './components/Die';
 import { generateAllNewDice } from './utils';
 
 const App = () => {
-  const [dice, setDice] = useState(generateAllNewDice());
+  const [dice, setDice] = useState(generateAllNewDice(10));
 
   const rollAllDice = () => {
-    setDice(generateAllNewDice());
+    setDice(generateAllNewDice(10));
   };
-  const diceElements = dice.map(die => <Die key={die.id} value={die.value} isHeld={die.isHeld} />);
+
+  const hold = id => {
+    setDice(oldDice =>
+      oldDice.map(die =>
+        die.id === id ? { ...die, isHeld: !die.isHeld } : die
+      )
+    );
+  };
+
+  // pass hold as a closed-over function prop - no need to pass id
+  const diceElements = dice.map(die => (
+    <Die
+      key={die.id}
+      value={die.value}
+      isHeld={die.isHeld}
+      hold={() => hold(die.id)}
+    />
+  ));
 
   return (
     <>

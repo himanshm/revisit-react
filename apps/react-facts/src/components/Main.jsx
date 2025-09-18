@@ -5,7 +5,10 @@ const Main = () => {
     { id: 2, text: 'Was originally created by Jordan Walke' },
     { id: 3, text: 'Has well over 100K stars on GitHub' },
     { id: 4, text: 'Is maintained by Meta' },
-    { id: 5, text: 'Powers thousands of enterprise apps, including mobile apps' }
+    {
+      id: 5,
+      text: 'Powers thousands of enterprise apps, including mobile apps'
+    }
   ];
   return (
     <main>

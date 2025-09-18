@@ -10,7 +10,11 @@ export default defineConfig([
   globalIgnores(['dist', 'vite.config.js']),
   {
     files: ['**/*.{js,jsx}'],
-    extends: [js.configs.recommended, reactHooks.configs['recommended-latest'], reactRefresh.configs.vite],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite
+    ],
     plugins: {
       prettier: prettierPlugin,
       import: importPlugin
@@ -31,7 +35,7 @@ export default defineConfig([
         'warn',
         {
           arrowParens: 'avoid',
-          printWidth: 120,
+          printWidth: 80,
           semi: true,
           singleQuote: true,
           trailingComma: 'none'
