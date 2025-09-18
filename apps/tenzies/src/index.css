@@ -14,7 +14,7 @@ body {
   margin: 0;
   padding: 0;
   line-height: 1.5;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Karla', sans-serif;
   color: #F5F5F5;
   background-color: #0B2434;
 
@@ -36,13 +36,19 @@ main {
   /* Center button grid */
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
+  flex-direction: column;
 }
 
 .dice-container {
   display: grid;
   grid-template: repeat(2, 1fr) / repeat(5, 1fr);
   gap: 2rem;
+}
+
+button {
+  font-family: Karla, sans-serif;
+  cursor: pointer;
 }
 
 .die {
@@ -52,8 +58,16 @@ main {
   border-radius: 10px;
   border: none;
   background-color: white;
-  font-family: Inter, sans-serif;
   font-size: 1.75rem;
   font-weight: bold;
-  cursor: pointer;
+}
+
+button.roll-dice-btn {
+  height: 50px;
+  width: 100px;
+  border: none;
+  border-radius: 6px;
+  background-color: #5035FF;
+  color: white;
+  font-size: 1.75rem;
 }
