@@ -1,3 +1,4 @@
+import { customNanoId } from '@revisit-react/config';
 import { useState } from 'react';
 import Die from './components/Die';
 
@@ -5,7 +6,8 @@ const App = () => {
   const generateAllNewDice = () =>
     Array.from({ length: 10 }, () => ({
       // id: crypto.randomUUID(),
-      id: Math.random().toString(36).slice(2, 8), // Other way to generate random ids
+      // id: Math.random().toString(36).slice(2, 8),
+      id: customNanoId(),
       value: Math.ceil(Math.random() * 6),
       isHeld: false
     }));

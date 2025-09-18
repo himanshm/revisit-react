@@ -1,0 +1,14 @@
+{
+  "name": "@revisit-react/utils",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    }
+  },
+  "dependencies": {
+    "nanoid": "^5.1.5"
+  }
+}
