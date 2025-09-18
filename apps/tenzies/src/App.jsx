@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import Die from './components/Die';
-import { generateAllNewDice } from './utils';
+import { generateAllNewDice, generateDie } from './utils';
 
 const App = () => {
   const [dice, setDice] = useState(generateAllNewDice(10));
 
-  const rollAllDice = () => {
-    setDice(generateAllNewDice(10));
+  const rollDice = () => {
+    setDice(oldDice => oldDice.map(die => (die.isHeld ? die : generateDie())));
   };
 
   const hold = id => {
@@ -30,8 +30,13 @@ const App = () => {
   return (
     <>
       <main>
+        <h1 className="title">Tenzies</h1>
+        <p className="instructions">
+          Roll until all dice are the same. Click each die to freeze it at its
+          current value between rolls.
+        </p>
         <div className="dice-container">{diceElements}</div>
-        <button className="roll-dice-btn" onClick={rollAllDice}>
+        <button className="roll-dice-btn" onClick={rollDice}>
           Roll
         </button>
       </main>
