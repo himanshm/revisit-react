@@ -5,6 +5,10 @@ import { generateAllNewDice, generateDie } from './utils';
 const App = () => {
   const [dice, setDice] = useState(generateAllNewDice(10));
 
+  const gameWon =
+    dice.every(die => die.isHeld) &&
+    dice.every(die => die.value === dice[0].value);
+
   const rollDice = () => {
     setDice(oldDice => oldDice.map(die => (die.isHeld ? die : generateDie())));
   };
@@ -37,7 +41,7 @@ const App = () => {
         </p>
         <div className="dice-container">{diceElements}</div>
         <button className="roll-dice-btn" onClick={rollDice}>
-          Roll
+          {gameWon ? 'New Game' : 'Roll'}
         </button>
       </main>
     </>
