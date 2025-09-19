@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
-    "@revisit-react/config": "workspace:*"
+    "@revisit-react/config": "workspace:*",
+    "react-confetti": "^6.4.0",
+    "react-use": "^17.6.0"
   }
 }

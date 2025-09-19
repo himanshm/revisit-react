@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import Confetti from 'react-confetti';
+import { useWindowSize } from 'react-use';
 import Die from './components/Die';
 import { generateAllNewDice, generateDie } from './utils';
 
 const App = () => {
+  const { height, width } = useWindowSize();
   const [dice, setDice] = useState(generateAllNewDice(10));
 
   const gameWon =
@@ -34,6 +37,7 @@ const App = () => {
   return (
     <>
       <main>
+        {gameWon && <Confetti height={height} width={width} />}
         <h1 className="title">Tenzies</h1>
         <p className="instructions">
           Roll until all dice are the same. Click each die to freeze it at its
