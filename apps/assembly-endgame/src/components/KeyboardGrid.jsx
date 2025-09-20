@@ -1,3 +1,5 @@
+import { clsx } from '@revisit-react/config';
+
 const KeyboardGrid = props => {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz';
   const keyboardLayout = [10, 10, 6];
@@ -11,15 +13,31 @@ const KeyboardGrid = props => {
 
   return rows.map((row, rowIdx) => (
     <div key={rowIdx} className="keyboard-row">
-      {row.map((letter, index) => (
-        <button
-          key={`${letter}-${index}`}
-          className="keyboard-btn"
-          onClick={() => props.selectLetter(letter)}
-        >
-          {letter}
-        </button>
-      ))}
+      {row.map((letter, index) => {
+        const isGuessed = props.guessedLetters.includes(letter);
+        const isCorrect = isGuessed && props.word.includes(letter);
+        const isWrong = isGuessed && !props.word.includes(letter);
+        const classNames = clsx({
+          'keyboard-btn': true,
+          correct: isCorrect,
+          wrong: isWrong
+        });
+
+        return (
+          <button
+            key={`${letter}-${index}`}
+            // className={clsx(
+            //   'keyboard-btn',
+            //   isGuessed && (isCorrect ? 'correct' : 'wrong')
+            // )}
+            className={classNames}
+            onClick={() => props.selectLetter(letter)}
+            disabled={isGuessed}
+          >
+            {letter}
+          </button>
+        );
+      })}
     </div>
   ));
 };

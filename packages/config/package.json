@@ -9,6 +9,7 @@
     }
   },
   "dependencies": {
-    "@revisit-react/utils": "workspace:*"
+    "@revisit-react/utils": "workspace:*",
+    "clsx": "^2.1.1"
   }
 }

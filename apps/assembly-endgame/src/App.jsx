@@ -8,10 +8,10 @@ import { languages } from './data';
 
 const AssemblyEndgame = () => {
   const [currentWord, setCurrentWord] = useState('react');
-  const [guessedLetter, setGuessedLetter] = useState([]);
+  const [guessedLetters, setGuessedLetters] = useState([]);
 
   const updateGussedLetter = letter => {
-    setGuessedLetter(prevLetters =>
+    setGuessedLetters(prevLetters =>
       !prevLetters.includes(letter) ? [...prevLetters, letter] : prevLetters
     );
   };
@@ -22,9 +22,8 @@ const AssemblyEndgame = () => {
     <LanguageChip key={lang.id} {...lang} />
   ));
 
-  console.log(guessedLetter);
   return (
-    <main>
+    <main className="app-container">
       <Header />
       <section className={`game-status ${bgClass}`}>{content}</section>
       <section className="language-chips">{languageElements}</section>
@@ -32,7 +31,11 @@ const AssemblyEndgame = () => {
         <LetterGrid word={currentWord} />
       </section>
       <section className="keyboard">
-        <KeyboardGrid selectLetter={updateGussedLetter} />
+        <KeyboardGrid
+          selectLetter={updateGussedLetter}
+          guessedLetters={guessedLetters}
+          word={currentWord}
+        />
       </section>
       <button className="new-game">New Game</button>
     </main>
