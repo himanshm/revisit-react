@@ -72,3 +72,9 @@ const App = () => {
 };
 
 export default App;
+
+/*extra credit ideas:
+ * add a timer and a roll counter to see how quickly you can win the game
+ * style the dice to look like real dice with pips instead of numbers
+ * deploy to the real world
+ */
