@@ -909,7 +909,6 @@ If React allowed objects, everyone might expect different default behavior → m
 
 3. Critical thinking: why is using `.map()` better than just
    creating the components manually by typing them out?
-
    1. We often don't have the data ahead of time when we're building
       the app, so we simply can't manually type them out.
    2. It makes our code more "self-sustaining" - not requiring additional
@@ -2170,7 +2169,6 @@ What can't react handle on its own?
 ### Effects
 
 - (Out)side effects!
-
   - local storage
   - API/database interactions
   - Subscriptions (e.g. websocket connections)
@@ -2501,13 +2499,11 @@ Here’s a visual flow diagram of how React handles `useEffect`:
 🟢 Mount vs Unmount in Simple Terms
 
 - Mount = When a component is first added to the UI.
-
   - Example: `<ChatRoom />` appears on the screen.
 
   - Effects run after this initial render.
 
 - Unmount = When a component is removed from the UI.
-
   - Example: Navigating away from the chat page removes `<ChatRoom />`.
 
   - Cleanup runs here to avoid leaks (unsubscribe, stop timers, disconnect sockets).
@@ -2618,9 +2614,7 @@ When a piece of information is used for rendering, keep it in state. When a piec
   state -> You can read state at any time. However, each render has its own snapshot of state which does not change.
 
 - State
-
   - Managed by React.
-
     - Each render gets its own snapshot (a fixed copy) of state.
 
     - That snapshot never changes during that render.
@@ -2823,6 +2817,7 @@ The `useRef` Hook returns an object with a single property called `current`. Ini
 A closure happens when a function “remembers” variables from the scope in which it was created, even after that scope is gone.
 
 Example:
+
 ```ts
 function makeGreeter(name: string) {
   return function greet() {
@@ -2838,11 +2833,7 @@ Here, `greet` “closes over” the variable name.
 Even though `makeGreeter` has finished running, `greet` keeps access to `name`.
 
 ```tsx
-<Die
-  value={die.value}
-  isHeld={die.isHeld}
-  hold={() => hold(die.id)}
-/>
+<Die value={die.value} isHeld={die.isHeld} hold={() => hold(die.id)} />
 ```
 
 That `() => hold(die.id)` is a closure.
@@ -2855,3 +2846,19 @@ Closed: the function “locks in” the surrounding variables.
 Over: it’s “hovering over” outer scope, capturing those variables.
 
 So your hold callback isn’t just a plain function — it’s a function plus the environment it captured.
+
+#### 🔑 Lazy state initialization
+
+Passing a function to `useState` tells React: _“only call this function on the first render to get the initial value”_
+
+example
+
+```tsx
+const [dice, setDice] = useState(() => generateAllNewDice(10));
+```
+
+Without it, generateAllNewDice(10) runs on **every render**, even though only the first one matters.
+
+```tsx
+const [dice, setDice] = useState(generateAllNewDice(10));
+```
