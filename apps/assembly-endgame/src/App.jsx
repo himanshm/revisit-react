@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import GameStatus from './components/GameStatus';
 import Header from './components/Header';
+import KeyboardGrid from './components/KeyboardGrid';
 import LanguageChip from './components/LanguageChip';
 import LetterGrid from './components/LetterGrid';
 import { languages } from './data';
@@ -20,6 +21,10 @@ const AssemblyEndgame = () => {
       <section className="letter-grid">
         <LetterGrid word={currentWord} />
       </section>
+      <section className="keyboard">
+        <KeyboardGrid />
+      </section>
+      <button className="new-game">New Game</button>
     </main>
   );
 };
