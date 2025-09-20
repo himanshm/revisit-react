@@ -8,12 +8,15 @@ const GameStatus = ({ status, langLost }) => {
       ? `${heading} ${langLost}`
       : heading);
 
-  return (
-    <section className={`game-status ${bgClass || ''}`}>
-      <h2>{h2Text}</h2>
-      {message && <p>{message}</p>}
-    </section>
-  );
+  return {
+    bgClass,
+    content: (
+      <>
+        <h2>{h2Text}</h2>
+        {message && <p>{message}</p>}
+      </>
+    )
+  };
 };
 
 export default GameStatus;

@@ -55,6 +55,12 @@ importers:
         specifier: ^7.1.2
         version: 7.1.2
 
+  apps/assembly-endgame:
+    dependencies:
+      '@revisit-react/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+
   apps/chef-claude:
     dependencies:
       '@anthropic-ai/sdk':
