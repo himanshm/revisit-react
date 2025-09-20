@@ -78,10 +78,30 @@ section.language-chips {
   gap: 0.5rem;
   justify-content: center;
   max-width: 35rem;
+  margin-bottom: 3.6rem;
 }
 
 span.chip {
   padding: 0.5rem;
   border-radius: 3px;
   font-size: 1.6rem;
+}
+
+section.letter-grid {
+    display: flex;
+    justify-content: center;
+    gap: 0.2rem;
+}
+
+span.letter {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #323232;
+    border-bottom: 1px solid #F9F4DA;
+    font-weight: bold;
+    font-size: 1.8rem;
+    text-transform: capitalize;
 }
