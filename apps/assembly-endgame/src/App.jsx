@@ -8,11 +8,21 @@ import { languages } from './data';
 
 const AssemblyEndgame = () => {
   const [currentWord, setCurrentWord] = useState('react');
+  const [guessedLetter, setGuessedLetter] = useState([]);
+
+  const updateGussedLetter = letter => {
+    setGuessedLetter(prevLetters =>
+      !prevLetters.includes(letter) ? [...prevLetters, letter] : prevLetters
+    );
+  };
+
   const { bgClass, content } = GameStatus({ status: 'win' });
+
   const languageElements = languages.map(lang => (
     <LanguageChip key={lang.id} {...lang} />
   ));
 
+  console.log(guessedLetter);
   return (
     <main>
       <Header />
@@ -22,7 +32,7 @@ const AssemblyEndgame = () => {
         <LetterGrid word={currentWord} />
       </section>
       <section className="keyboard">
-        <KeyboardGrid />
+        <KeyboardGrid selectLetter={updateGussedLetter} />
       </section>
       <button className="new-game">New Game</button>
     </main>

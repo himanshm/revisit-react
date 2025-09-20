@@ -1,4 +1,4 @@
-const KeyboardGrid = () => {
+const KeyboardGrid = props => {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz';
   const keyboardLayout = [10, 10, 6];
 
@@ -8,12 +8,15 @@ const KeyboardGrid = () => {
     start += size;
     return row;
   });
-  console.log(rows);
 
   return rows.map((row, rowIdx) => (
     <div key={rowIdx} className="keyboard-row">
       {row.map((letter, index) => (
-        <button key={`${letter}-${index}`} className="keyboard-btn">
+        <button
+          key={`${letter}-${index}`}
+          className="keyboard-btn"
+          onClick={() => props.selectLetter(letter)}
+        >
           {letter}
         </button>
       ))}
@@ -22,3 +25,5 @@ const KeyboardGrid = () => {
 };
 
 export default KeyboardGrid;
+
+// Note: Clicking on same letter twice -> component renders twice -> on next click it doesn't render
