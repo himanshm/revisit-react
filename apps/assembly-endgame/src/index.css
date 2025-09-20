@@ -1,0 +1,19 @@
+/* Base font sizing: 1rem = 10px */
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+/* Inherit box-sizing everywhere */
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* Body defaults */
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  background-color: #282726;
+  color: #F9F4DA;
+}

@@ -1,0 +1,9 @@
+{
+  "name": "assembly-endgame",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@revisit-react/config": "workspace:*"
+  }
+}
