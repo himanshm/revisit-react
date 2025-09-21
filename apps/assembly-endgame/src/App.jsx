@@ -28,7 +28,7 @@ const AssemblyEndgame = () => {
       <section className={`game-status ${bgClass}`}>{content}</section>
       <section className="language-chips">{languageElements}</section>
       <section className="letter-grid">
-        <LetterGrid word={currentWord} />
+        <LetterGrid word={currentWord} guessedLetters={guessedLetters} />
       </section>
       <section className="keyboard">
         <KeyboardGrid
