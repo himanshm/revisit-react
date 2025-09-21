@@ -107,17 +107,15 @@ span.chip {
 }
 
 /* Dimmed overlay with skull on "lost" languages */
+/* Check readme for style related details here */
 span.chip.lost::before {
     content: "💀";
     position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-    font-size: 0.85rem;
-    top: 0;
-    left: 0;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 4px;
+    font-size: 1.4rem;
     background-color: rgba(0, 0, 0, 0.7);
 }
 

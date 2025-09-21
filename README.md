@@ -2862,3 +2862,57 @@ Without it, generateAllNewDice(10) runs on **every render**, even though only th
 ```tsx
 const [dice, setDice] = useState(generateAllNewDice(10));
 ```
+
+#### CSS Gotcha
+
+In your original:
+
+```css
+span.chip.lost::before {
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+```
+
+That covers the top-left, but doesn’t explicitly set `right` or `bottom`. Because you set both `width` and `height` to `100%`, the pseudo-element expands to the size of the parent chip anyway.
+
+`inset: 0;`, that’s just a shorthand for:
+
+```css
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+```
+
+The effect is the same if you want the pseudo-element to cover the whole chip. In that case, you don’t need `width/height: 100%` at all, because `position: absolute + inset: 0` pins the edges directly.
+
+So it boils down to two equivalent approaches:
+
+**Approach A — Width/height based (your original style)**
+
+```css
+span.chip.lost::before {
+  content: "💀";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+```
+
+**Approach B — Inset based (alternative shorthand)**
+
+```css
+span.chip.lost::before {
+content: "💀";
+position: absolute;
+inset: 0; /_ replaces top/right/bottom/left _/
+}
+```
+
+👉 If your mental model is “stretch to parent size,” then `width/height: 100%` is clearer.
+👉 If your mental model is “pin to edges,” then `inset: 0` is more concise.
