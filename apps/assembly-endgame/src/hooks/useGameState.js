@@ -1,3 +1,5 @@
+import { getFarewellText } from '../data';
+
 const useGameState = (currentWord, guessedLetters, languages) => {
   const wrongGuessCount = guessedLetters.filter(
     letter => !currentWord.includes(letter)
@@ -11,15 +13,29 @@ const useGameState = (currentWord, guessedLetters, languages) => {
 
   const isGameOver = isGameLost || isGameWon;
 
+  const lastGuessedLetter = guessedLetters[guessedLetters.length - 1];
+  const isLastGuessedIncorrect =
+    lastGuessedLetter && ![...currentWord].includes(lastGuessedLetter);
+
+  const farewellText =
+    wrongGuessCount > 0 && isLastGuessedIncorrect
+      ? getFarewellText(languages[wrongGuessCount - 1].name)
+      : null;
+
+  const status = isGameOver ? (isGameWon ? 'won' : 'lost') : null;
+
   return {
     wrongGuessCount,
     isGameWon,
     isGameLost,
     isGameOver,
+    farewellText,
     gameStatus: {
-      status: isGameOver ? (isGameWon ? 'won' : 'lost') : null,
+      status,
       won: isGameWon,
-      lost: isGameLost
+      lost: isGameLost,
+      showFarewell: !isGameOver && isLastGuessedIncorrect,
+      lastGuessIncorrect: isLastGuessedIncorrect
     }
   };
 };

@@ -6,7 +6,6 @@ import LanguageChip from './components/LanguageChip';
 import LetterGrid from './components/LetterGrid';
 import { languages } from './data';
 import useGameState from './hooks/useGameState';
-
 /**
  * Backlog:
  *
@@ -22,11 +21,8 @@ const AssemblyEndgame = () => {
   const [guessedLetters, setGuessedLetters] = useState([]);
 
   // Hooks
-  const { wrongGuessCount, isGameOver, gameStatus } = useGameState(
-    currentWord,
-    guessedLetters,
-    languages
-  );
+  const { wrongGuessCount, isGameOver, gameStatus, farewellText } =
+    useGameState(currentWord, guessedLetters, languages);
 
   const updateGuessedLetter = letter => {
     setGuessedLetters(prevLetters =>
@@ -46,7 +42,7 @@ const AssemblyEndgame = () => {
   return (
     <main className="app-container">
       <Header />
-      <GameStatus gameStatus={gameStatus} />
+      <GameStatus gameStatus={gameStatus} farewellText={farewellText} />
       <section className="language-chips">{languageElements}</section>
       <section className="letter-grid">
         <LetterGrid word={currentWord} guessedLetters={guessedLetters} />
