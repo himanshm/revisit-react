@@ -5,30 +5,24 @@ import KeyboardGrid from './components/KeyboardGrid';
 import LanguageChip from './components/LanguageChip';
 import LetterGrid from './components/LetterGrid';
 import { languages } from './data';
+import useGameState from './hooks/useGameState';
 
 const AssemblyEndgame = () => {
   const [currentWord, setCurrentWord] = useState('react');
   const [guessedLetters, setGuessedLetters] = useState([]);
 
-  const updateGussedLetter = letter => {
+  // Hooks
+  const { wrongGuessCount, isGameOver, gameStatus } = useGameState(
+    currentWord,
+    guessedLetters,
+    languages
+  );
+
+  const updateGuessedLetter = letter => {
     setGuessedLetters(prevLetters =>
       !prevLetters.includes(letter) ? [...prevLetters, letter] : prevLetters
     );
   };
-
-  const wrongGuessCount = guessedLetters.filter(
-    letter => !currentWord.includes(letter)
-  ).length;
-
-  const isGameWon = [...currentWord].every(letter =>
-    guessedLetters.includes(letter)
-  );
-
-  const isGameLost = wrongGuessCount >= languages.length - 1;
-
-  const isGameOver = isGameLost || isGameWon;
-
-  const { bgClass, content } = GameStatus({ status: 'win' });
 
   const languageElements = languages.map((lang, index) => (
     <LanguageChip
@@ -42,14 +36,14 @@ const AssemblyEndgame = () => {
   return (
     <main className="app-container">
       <Header />
-      <section className={`game-status ${bgClass}`}>{content}</section>
+      <GameStatus status={gameStatus} />
       <section className="language-chips">{languageElements}</section>
       <section className="letter-grid">
         <LetterGrid word={currentWord} guessedLetters={guessedLetters} />
       </section>
       <section className="keyboard">
         <KeyboardGrid
-          selectLetter={updateGussedLetter}
+          selectLetter={updateGuessedLetter}
           guessedLetters={guessedLetters}
           word={currentWord}
         />
