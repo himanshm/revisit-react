@@ -16,10 +16,19 @@ const AssemblyEndgame = () => {
     );
   };
 
+  const wrongGuessCount = guessedLetters.filter(
+    letter => !currentWord.includes(letter)
+  ).length;
+
   const { bgClass, content } = GameStatus({ status: 'win' });
 
-  const languageElements = languages.map(lang => (
-    <LanguageChip key={lang.id} {...lang} />
+  const languageElements = languages.map((lang, index) => (
+    <LanguageChip
+      key={lang.id}
+      {...lang}
+      index={index}
+      wrongGuesses={wrongGuessCount}
+    />
   ));
 
   return (
