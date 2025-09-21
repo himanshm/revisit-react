@@ -16,7 +16,11 @@ const useGameState = (currentWord, guessedLetters, languages) => {
     isGameWon,
     isGameLost,
     isGameOver,
-    gameStatus: isGameOver ? (isGameWon ? 'won' : 'lost') : null
+    gameStatus: {
+      status: isGameOver ? (isGameWon ? 'won' : 'lost') : null,
+      won: isGameWon,
+      lost: isGameLost
+    }
   };
 };
 

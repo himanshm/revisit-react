@@ -2,17 +2,14 @@ import { customNanoId } from '@revisit-react/config';
 
 export const statusConfig = {
   won: {
-    class: 'won',
     heading: 'You won!',
     message: 'Well done! 🎉'
   },
   lost: {
-    class: 'lost',
     heading: 'Game Over!',
     message: 'You lose! Better start learning Assembly 😭'
   },
   loseLanguage: {
-    class: 'bg-purple',
     heading: 'Farewell',
     message: ''
   }

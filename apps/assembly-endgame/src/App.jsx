@@ -7,6 +7,16 @@ import LetterGrid from './components/LetterGrid';
 import { languages } from './data';
 import useGameState from './hooks/useGameState';
 
+/**
+ * Backlog:
+ *
+ * - Farewell messages in status section
+ * - Fix a11y issues ally-accessibility
+ * - Make the new game button work
+ * - Choose a random word from a list of words
+ * - Confetti drop when the user wins
+ */
+
 const AssemblyEndgame = () => {
   const [currentWord, setCurrentWord] = useState('react');
   const [guessedLetters, setGuessedLetters] = useState([]);
@@ -36,7 +46,7 @@ const AssemblyEndgame = () => {
   return (
     <main className="app-container">
       <Header />
-      <GameStatus status={gameStatus} />
+      <GameStatus gameStatus={gameStatus} />
       <section className="language-chips">{languageElements}</section>
       <section className="letter-grid">
         <LetterGrid word={currentWord} guessedLetters={guessedLetters} />

@@ -1,16 +1,21 @@
 import { clsx } from '@revisit-react/config';
 import { statusConfig } from '../data';
 
-const GameStatus = ({ status, langLost }) => {
-  const { heading, message, class: bgClass } = statusConfig[status] || {};
+const GameStatus = ({ gameStatus, langLost }) => {
+  const { status, won, lost } = gameStatus;
+  const { heading, message } = statusConfig[status] || {};
   const h2Text =
     heading &&
     (langLost && status === 'loseLanguage'
       ? `${heading} ${langLost}`
       : heading);
 
+  const gameStatusClass = clsx('game-status', {
+    won,
+    lost
+  });
   return (
-    <section className={clsx('game-status', bgClass)}>
+    <section className={gameStatusClass}>
       {h2Text && <h2>{h2Text}</h2>}
       {message && <p>{message}</p>}
     </section>
