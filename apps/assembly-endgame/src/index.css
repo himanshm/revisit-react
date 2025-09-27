@@ -138,6 +138,10 @@ span.letter {
   text-transform: capitalize;
 }
 
+span.missed-letter {
+  color: #EC5D49;
+}
+
 /* Keyboard */
 section.keyboard {
   display: flex;

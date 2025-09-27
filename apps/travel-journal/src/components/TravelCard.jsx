@@ -1,7 +1,6 @@
 import locationIcon from '../assets/location.png';
 
 export default function Entry(props) {
-  console.log(props);
   const { img, country, dates, text, title, googleMapsLink } = props.entryData;
   return (
     <article className="journal-entry">

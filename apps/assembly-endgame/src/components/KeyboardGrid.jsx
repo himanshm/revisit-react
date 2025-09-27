@@ -10,7 +10,6 @@ const KeyboardGrid = props => {
     start += size;
     return row;
   });
-  console.log(props.gameOver);
 
   return rows.map((row, rowIdx) => (
     <div key={rowIdx} className="keyboard-row">

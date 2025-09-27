@@ -1,4 +1,8 @@
 import { customNanoId } from '@revisit-react/config';
+import { words } from './words';
+
+export const getRandomIndex = options =>
+  Math.floor(Math.random() * options.length);
 
 export const statusConfig = {
   won: {
@@ -84,6 +88,11 @@ export function getFarewellText(language) {
     `${language} has left the building`
   ];
 
-  const randomIndex = Math.floor(Math.random() * options.length);
+  const randomIndex = getRandomIndex(options);
   return options[randomIndex];
 }
+
+export const getRandomWord = () => {
+  const randomIndex = getRandomIndex(words);
+  return words[randomIndex];
+};

@@ -4,7 +4,7 @@ import Header from './components/Header';
 import KeyboardGrid from './components/KeyboardGrid';
 import LanguageChip from './components/LanguageChip';
 import LetterGrid from './components/LetterGrid';
-import { languages } from './data';
+import { getRandomWord, languages } from './data';
 import useGameState from './hooks/useGameState';
 /**
  * Backlog:
@@ -16,7 +16,7 @@ import useGameState from './hooks/useGameState';
  */
 
 const AssemblyEndgame = () => {
-  const [currentWord, setCurrentWord] = useState('react');
+  const [currentWord, setCurrentWord] = useState(() => getRandomWord());
   const [guessedLetters, setGuessedLetters] = useState([]);
 
   // Hooks
@@ -44,13 +44,22 @@ const AssemblyEndgame = () => {
     />
   ));
 
+  const handleResetGame = () => {
+    setCurrentWord(getRandomWord());
+    setGuessedLetters([]);
+  };
+
   return (
     <main className="app-container">
       <Header />
       <GameStatus gameStatus={gameStatus} farewellText={farewellText} />
       <section className="language-chips">{languageElements}</section>
       <section className="letter-grid">
-        <LetterGrid word={currentWord} guessedLetters={guessedLetters} />
+        <LetterGrid
+          word={currentWord}
+          guessedLetters={guessedLetters}
+          isGameLost={gameStatus.lost}
+        />
       </section>
       <section className="sr-only" aria-live="polite" role="status">
         <p>
@@ -76,7 +85,11 @@ const AssemblyEndgame = () => {
           gameOver={isGameOver}
         />
       </section>
-      {isGameOver && <button className="new-game">New Game</button>}
+      {isGameOver && (
+        <button className="new-game" onClick={handleResetGame}>
+          New Game
+        </button>
+      )}
     </main>
   );
 };

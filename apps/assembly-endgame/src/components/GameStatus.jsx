@@ -2,7 +2,6 @@ import { clsx } from '@revisit-react/config';
 import { statusConfig } from '../data';
 
 const GameStatus = ({ gameStatus, farewellText }) => {
-  console.log({ gameStatus }, { farewellText });
   const { status, won, lost, showFarewell, lastGuessIncorrect } = gameStatus;
   const { heading, message } = statusConfig[status] || {};
 
