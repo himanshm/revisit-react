@@ -10,6 +10,7 @@ const KeyboardGrid = props => {
     start += size;
     return row;
   });
+  console.log(props.gameOver);
 
   return rows.map((row, rowIdx) => (
     <div key={rowIdx} className="keyboard-row">
@@ -32,7 +33,9 @@ const KeyboardGrid = props => {
             // )}
             className={classNames}
             onClick={() => props.selectLetter(letter)}
-            disabled={isGuessed}
+            disabled={isGuessed || props.gameOver}
+            aria-disabled={isGuessed}
+            aria-label={`Letter ${letter}`}
           >
             {letter}
           </button>

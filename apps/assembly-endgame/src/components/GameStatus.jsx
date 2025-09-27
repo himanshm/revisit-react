@@ -17,7 +17,7 @@ const GameStatus = ({ gameStatus, farewellText }) => {
   const messageClass = lastGuessIncorrect ? 'farewell-message' : '';
 
   return (
-    <section className={gameStatusClass}>
+    <section className={gameStatusClass} aria-live="polite" role="status">
       {<h2>{heading}</h2>}
       {<p className={messageClass}>{messageText}</p>}
     </section>

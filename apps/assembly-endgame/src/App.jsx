@@ -9,7 +9,6 @@ import useGameState from './hooks/useGameState';
 /**
  * Backlog:
  *
- * - Farewell messages in status section
  * - Fix a11y issues ally-accessibility
  * - Make the new game button work
  * - Choose a random word from a list of words
@@ -21,8 +20,14 @@ const AssemblyEndgame = () => {
   const [guessedLetters, setGuessedLetters] = useState([]);
 
   // Hooks
-  const { wrongGuessCount, isGameOver, gameStatus, farewellText } =
-    useGameState(currentWord, guessedLetters, languages);
+  const {
+    wrongGuessCount,
+    isGameOver,
+    gameStatus,
+    farewellText,
+    lastGuessedLetter,
+    numGuessedLeft
+  } = useGameState(currentWord, guessedLetters, languages);
 
   const updateGuessedLetter = letter => {
     setGuessedLetters(prevLetters =>
@@ -47,11 +52,28 @@ const AssemblyEndgame = () => {
       <section className="letter-grid">
         <LetterGrid word={currentWord} guessedLetters={guessedLetters} />
       </section>
+      <section className="sr-only" aria-live="polite" role="status">
+        <p>
+          {currentWord.includes(lastGuessedLetter)
+            ? `Correct! the letter ${lastGuessedLetter} is in the word.`
+            : `Sorry! the letter ${lastGuessedLetter} is not in the word.`}
+          You have {numGuessedLeft} letters left.
+        </p>
+        <p>
+          Current word:{' '}
+          {[...currentWord]
+            .map(letter =>
+              guessedLetters.includes(letter) ? letter + '.' : 'blank.'
+            )
+            .join(' ')}
+        </p>
+      </section>
       <section className="keyboard">
         <KeyboardGrid
           selectLetter={updateGuessedLetter}
           guessedLetters={guessedLetters}
           word={currentWord}
+          gameOver={isGameOver}
         />
       </section>
       {isGameOver && <button className="new-game">New Game</button>}

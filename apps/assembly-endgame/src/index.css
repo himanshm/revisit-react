@@ -176,7 +176,7 @@ button.keyboard-btn.wrong {
 
 button.keyboard-btn:disabled {
   cursor: not-allowed;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 
@@ -192,3 +192,14 @@ button.new-game {
   cursor: pointer;
 }
 
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

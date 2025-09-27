@@ -9,7 +9,9 @@ const useGameState = (currentWord, guessedLetters, languages) => {
     guessedLetters.includes(letter)
   );
 
-  const isGameLost = wrongGuessCount >= languages.length - 1;
+  const numGuessedLeft = languages.length - 1;
+
+  const isGameLost = wrongGuessCount >= numGuessedLeft;
 
   const isGameOver = isGameLost || isGameWon;
 
@@ -30,6 +32,8 @@ const useGameState = (currentWord, guessedLetters, languages) => {
     isGameLost,
     isGameOver,
     farewellText,
+    lastGuessedLetter,
+    numGuessedLeft,
     gameStatus: {
       status,
       won: isGameWon,
